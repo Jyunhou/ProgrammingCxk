@@ -1,0 +1,77 @@
+<!DOCTYPE html>
+<html lang="zh">
+
+<head>
+	<meta charset="utf-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+	<title>标题 - 电竞管理系统</title>
+	<link rel="stylesheet" href="/static/layui/css/layui.css">
+</head>
+
+<body class="layui-layout-body">
+<div class="layui-layout layui-layout-admin">
+	<div class="layui-header">
+		<div class="layui-logo">电竞管理系统</div>
+		<ul class="layui-nav layui-layout-right">
+			{% if request.user.is_authenticated %}
+				<li class="layui-nav-item">
+					<a href="javascript:">
+						{{ request.user.first_name }}
+						<span class="layui-nav-more"></span>
+					</a>
+					<dl class="layui-nav-child layui-anim layui-anim-upbit">
+						<dd><a href="{% url 'user-detail' %}">设置</a></dd>
+						<dd><a href="">全部消息</a></dd>
+					</dl>
+				</li>
+				<li class="layui-nav-item"><a href="javascript:" onclick="logout()">注销</a></li>
+			{% else %}
+				<li class="layui-nav-item"><a href="{% url 'login' %}?from={{ request.path }}">登录</a></li>
+				<li class="layui-nav-item"><a href="{% url 'register' %}?from={{ request.path }}">注册</a></li>
+			{% endif %}
+		</ul>
+	</div>
+
+	<div class="layui-side layui-bg-black">
+		<div class="layui-side-scroll">
+			<!-- 左侧导航区域 -->
+			<ul class="layui-nav layui-nav-tree">
+				<li class="layui-nav-item layui-nav-itemed">
+					<a class="" href="javascript:">
+						比赛数据
+						<span class="layui-nav-more"></span>
+					</a>
+					<dl class="layui-nav-child">
+						<dd><a href="javascript:">项目名称</a></dd>
+					</dl>
+				</li>
+				<li class="layui-nav-item"><a href="">选手信息</a></li>
+				<li class="layui-nav-item"><a href="">俱乐部战队</a></li>
+			</ul>
+		</div>
+	</div>
+
+	<div class="layui-body">
+		<!-- 内容主体区域 -->
+		<div style="padding: 15px;">
+			{% block body %}{% endblock %}
+		</div>
+	</div>
+
+	<div class="layui-footer">
+		<!-- 底部声明 -->
+		电竞管理系统 - 编程两年半
+	</div>
+</div>
+
+<script src="/static/layui/layui.js"></script>
+<script src="/static/utils.js"></script>
+<script>
+	layui.use('element', function () {
+		var element = layui.element;
+	});
+</script>
+{% block script %}{% endblock %}
+</body>
+
+</html>

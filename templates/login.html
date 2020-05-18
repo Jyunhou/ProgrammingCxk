@@ -1,0 +1,64 @@
+{% extends 'base.html' %}
+{% block body %}
+	<div class="layui-form layui-tab-content" id="LAY_ucm" style="padding: 20px 0;">
+		<div class="layui-tab-item layui-show">
+			<div class="layui-form layui-form-pane">
+				<form>
+					{% csrf_token %}
+					<div class="layui-form-item">
+						<label for="username" class="layui-form-label">用户名</label>
+						<div class="layui-input-inline">
+							<input type="text" id="username" name="username"
+								   required lay-verify="required"
+								   autocomplete="off"
+								   class="layui-input">
+						</div>
+					</div>
+					<div class="layui-form-item">
+						<label for="password" class="layui-form-label">密码</label>
+						<div class="layui-input-inline">
+							<input type="password" id="password" name="password"
+								   required
+								   lay-verify="required" autocomplete="off"
+								   class="layui-input">
+						</div>
+					</div>
+					<div class="layui-form-item">
+						<button type="submit" class="layui-btn" id="btn-submit" lay-filter="login" lay-submit>
+							立即登录
+							<i class="layui-icon layui-icon-loading layui-anim layui-anim-rotate layui-anim-loop layui-hide"></i>
+						</button>
+					</div>
+				</form>
+			</div>
+		</div>
+	</div>
+{% endblock %}
+
+{% block script %}
+	<script>
+		layui.use(["form"], function () {
+			var form = layui.form;
+			form.on('submit(login)', function (data) {
+				postAndTip({
+					url: "{% url 'api-login' %}",
+					data: layui.$("form").serialize(),
+					csrfToken: "{{ csrf_token }}",
+					actionName: "登录",
+					success: function (result) {
+						var fromUrl = getParam("from");
+						if (fromUrl !== null) {
+							window.location = fromUrl;
+						} else {
+							window.location = '/';
+						}
+					},
+					fail: function (result) {
+					},
+					showSuccessTip: false,
+				});
+				return false;
+			});
+		});
+	</script>
+{% endblock %}

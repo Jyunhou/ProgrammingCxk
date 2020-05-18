@@ -1,0 +1,83 @@
+{% extends 'base.html' %}
+{% block body %}
+	<blockquote class="layui-elem-quote">
+		在此您可以修改昵称、登录密码，密码留空则不会修改
+	</blockquote>
+	<div class="layui-form layui-tab-content" style="padding: 20px 0;">
+		<div class="layui-tab-item layui-show">
+			<div class="layui-form layui-form-pane">
+				<form method="post">
+					{% csrf_token %}
+					<div class="layui-form-item">
+						<label for="username" class="layui-form-label">用户名</label>
+						<div class="layui-input-inline">
+							<input type="text" id="username" name="username" value="{{ request.user.username }}"
+								   required autocomplete="off" readonly lay-verify="required"
+								   class="layui-input">
+						</div>
+					</div>
+					<div class="layui-form-item">
+						<label for="firstname" class="layui-form-label">昵称</label>
+						<div class="layui-input-inline">
+							<input type="text" id="firstname" name="firstname" value="{{ request.user.first_name }}"
+								   required autocomplete="off" lay-verify="required"
+								   class="layui-input">
+						</div>
+					</div>
+					<blockquote class="layui-elem-quote">
+						密码只能由字母、数字、符号做成，长度大于8位，且不能为纯数字
+					</blockquote>
+					<div class="layui-form-item">
+						<label for="password" class="layui-form-label">密码</label>
+						<div class="layui-input-inline">
+							<input type="password" id="password" name="password"
+								   autocomplete="off" placeholder="（未更改）"
+								   class="layui-input">
+						</div>
+					</div>
+					<div class="layui-form-item">
+						<label for="repass" class="layui-form-label">确认密码</label>
+						<div class="layui-input-inline">
+							<input type="password" id="repass" name="repass"
+								   autocomplete="off" placeholder="（未更改）"
+								   class="layui-input">
+						</div>
+					</div>
+					<div class="layui-form-item">
+						<button type="submit" id="btn-submit" class="layui-btn" lay-filter="register" lay-submit>
+							修改
+							<i class="layui-icon layui-icon-loading layui-anim layui-anim-rotate layui-anim-loop layui-hide"></i>
+						</button>
+					</div>
+				</form>
+			</div>
+		</div>
+	</div>
+{% endblock %}
+
+{% block script %}
+	<script>
+		layui.use(["form"], function () {
+			var form = layui.form;
+			form.on('submit(register)', function (data) {
+				submitting();
+				postAndTip({
+					url: "{% url 'api-user-change' %}",
+					data: layui.$("form").serialize(),
+					csrfToken: "{{ csrf_token }}",
+					actionName: "修改",
+					success: function (result) {
+						setTimeout(function () {
+							window.location.reload();
+						}, 1000);
+					},
+					fail: function (result) {
+						submitFailed();
+					},
+					showSuccessTip: true,
+				});
+				return false;
+			});
+		});
+	</script>
+{% endblock %}

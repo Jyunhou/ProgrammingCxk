@@ -16,6 +16,23 @@ Including another URLconf
 from django.contrib import admin
 from django.urls import path
 
+from esports.views import frontend
+from esports.views.api import Auth as AuthApi
+from esports.views.api import User as UserApi
+from esports.views.frontend import User as UserPage
+
 urlpatterns = [
+    # 前端页面
     path('admin/', admin.site.urls),
+    path('', frontend.index, name='index'),
+    path('login/', frontend.login, name='login'),
+    path('register/', frontend.register, name='register'),
+    # 用户
+    path('user/', UserPage.detail, name='user-detail'),
+    # api
+    # 用户
+    path('api/login/', AuthApi.login, name='api-login'),
+    path('api/logout/', AuthApi.logout, name='api-logout'),
+    path('api/register/', AuthApi.register, name='api-register'),
+    path('api/user/change/', UserApi.change, name='api-user-change'),
 ]
