@@ -33,6 +33,7 @@ def password_validate(password: str, repass: str) -> (bool, int, str):
 class User:
     @staticmethod
     def change(request):
+        avatar: str = request.POST.get('avatar')
         nickname: str = request.POST.get('nickname')
         gender: str = request.POST.get('gender')
         phone: str = request.POST.get('phone')
@@ -41,6 +42,7 @@ class User:
         repass: str = request.POST.get('repass')
 
         user: DjangoUser = request.user
+        user.person.avatar = avatar
         user.person.name = nickname
         user.person.gender = gender
         if Person.objects.filter(phone=phone).exclude(id=user.person.id).exists():

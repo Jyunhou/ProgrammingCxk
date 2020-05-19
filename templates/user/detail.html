@@ -17,6 +17,22 @@
 						</div>
 						<div class="layui-form-mid layui-word-aux">用户名不可修改</div>
 					</div>
+					<blockquote class="layui-elem-quote">
+						头像仅支持外部图像链接
+					</blockquote>
+					<div class="layui-form-item">
+						<label for="avatar" class="layui-form-label">头像</label>
+						<div class="layui-input-block">
+							<input type="text" id="avatar" name="avatar" value="{{ request.user.person.avatar }}"
+								   required autocomplete="off" lay-verify="required"
+								   class="layui-input">
+						</div>
+					</div>
+					<div class="layui-form-item">
+						<img src="{{ request.user.person.avatar }}" alt="头像" id="avatar-image"
+							 style="width:128px;height:128px;border-radius:2px;">
+						<button class="layui-btn" lay-filter="update-avatar" lay-submit>刷新头像</button>
+					</div>
 					<div class="layui-form-item">
 						<label for="nickname" class="layui-form-label">昵称</label>
 						<div class="layui-input-inline">
@@ -113,6 +129,11 @@
 					},
 					showSuccessTip: true,
 				});
+				return false;
+			});
+
+			form.on('submit(update-avatar)', function (data) {
+				layui.$("#avatar-image")[0].src = layui.$("#avatar")[0].value;
 				return false;
 			});
 		});

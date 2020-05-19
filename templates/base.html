@@ -16,6 +16,7 @@
 			{% if request.user.is_authenticated %}
 				<li class="layui-nav-item">
 					<a href="javascript:">
+						<img src="{{ request.user.person.avatar }}" alt="头像" class="layui-nav-img">
 						{{ request.user.person.name }}
 						<span class="layui-nav-more"></span>
 					</a>
