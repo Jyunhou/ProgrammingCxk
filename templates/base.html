@@ -16,11 +16,11 @@
 			{% if request.user.is_authenticated %}
 				<li class="layui-nav-item">
 					<a href="javascript:">
-						{{ request.user.first_name }}
+						{{ request.user.person.name }}
 						<span class="layui-nav-more"></span>
 					</a>
 					<dl class="layui-nav-child layui-anim layui-anim-upbit">
-						<dd><a href="{% url 'user-detail' %}">设置</a></dd>
+						<dd><a href="{% url 'user-detail' %}">用户设置</a></dd>
 						<dd><a href="">全部消息</a></dd>
 					</dl>
 				</li>

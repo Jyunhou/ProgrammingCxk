@@ -1,7 +1,7 @@
 {% extends 'base.html' %}
 {% block body %}
 	<blockquote class="layui-elem-quote">
-		在此您可以修改昵称、登录密码，密码留空则不会修改
+		在此您可以修改各项信息，密码留空则不会修改
 	</blockquote>
 	<div class="layui-form layui-tab-content" style="padding: 20px 0;">
 		<div class="layui-tab-item layui-show">
@@ -11,21 +11,58 @@
 					<div class="layui-form-item">
 						<label for="username" class="layui-form-label">用户名</label>
 						<div class="layui-input-inline">
-							<input type="text" id="username" name="username" value="{{ request.user.username }}"
-								   required autocomplete="off" readonly lay-verify="required"
+							<input type="text" id="username" value="{{ request.user.username }}"
+								   readonly
 								   class="layui-input">
 						</div>
+						<div class="layui-form-mid layui-word-aux">用户名不可修改</div>
 					</div>
 					<div class="layui-form-item">
-						<label for="firstname" class="layui-form-label">昵称</label>
+						<label for="nickname" class="layui-form-label">昵称</label>
 						<div class="layui-input-inline">
-							<input type="text" id="firstname" name="firstname" value="{{ request.user.first_name }}"
+							<input type="text" id="nickname" name="nickname" value="{{ request.user.person.name }}"
 								   required autocomplete="off" lay-verify="required"
 								   class="layui-input">
 						</div>
 					</div>
+					<div class="layui-form-item">
+						<label class="layui-form-label">性别</label>
+						<div class="layui-input-block">
+							<input type="radio" name="gender" value="1" title="男"
+									{% if request.user.person.gender == 1 %} checked{% endif %}>
+							<input type="radio" name="gender" value="0" title="女"
+									{% if request.user.person.gender == 0 %} checked{% endif %}>
+						</div>
+					</div>
+					<div class="layui-form-item">
+						<label for="phone" class="layui-form-label">电话号码</label>
+						<div class="layui-input-inline">
+							<input type="tel" id="phone" name="phone" value="{{ request.user.person.phone }}"
+								   required lay-verify="required|phone"
+								   autocomplete="off"
+								   class="layui-input">
+						</div>
+					</div>
+					<div class="layui-form-item">
+						<label for="email" class="layui-form-label">电子邮箱</label>
+						<div class="layui-input-inline">
+							<input type="email" id="email" name="email" value="{{ request.user.person.email }}"
+								   required lay-verify="required|email"
+								   autocomplete="off"
+								   class="layui-input">
+						</div>
+					</div>
+					<div class="layui-form-item">
+						<label for="type" class="layui-form-label">类型</label>
+						<div class="layui-input-inline">
+							<input type="text" id="type" value="{{ request.user.person.get_type_display }}"
+								   readonly
+								   class="layui-input">
+						</div>
+						<div class="layui-form-mid layui-word-aux">类型不可修改</div>
+					</div>
 					<blockquote class="layui-elem-quote">
-						密码只能由字母、数字、符号做成，长度大于8位，且不能为纯数字
+						密码只能由字母、数字、符号组成，长度大于8位，且不能为纯数字
 					</blockquote>
 					<div class="layui-form-item">
 						<label for="password" class="layui-form-label">密码</label>

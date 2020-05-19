@@ -1,6 +1,7 @@
 from django.contrib import auth
 from django.contrib.auth.models import User as DjangoUser
 
+from esports.models import Person
 from utils.tools import json_success, json_failed
 
 
@@ -32,18 +33,29 @@ def password_validate(password: str, repass: str) -> (bool, int, str):
 class User:
     @staticmethod
     def change(request):
-        first_name: str = request.POST.get('firstname')
+        nickname: str = request.POST.get('nickname')
+        gender: str = request.POST.get('gender')
+        phone: str = request.POST.get('phone')
+        email: str = request.POST.get('email')
         password: str = request.POST.get('password')
         repass: str = request.POST.get('repass')
 
         user: DjangoUser = request.user
-        user.first_name = first_name
+        user.person.name = nickname
+        user.person.gender = gender
+        if Person.objects.filter(phone=phone).exclude(id=user.person.id).exists():
+            return json_failed(4, '电话号码已被使用')
+        user.person.phone = phone
+        if Person.objects.filter(email=email).exclude(id=user.person.id).exists():
+            return json_failed(4, '电子邮箱已被使用')
+        user.person.email = email
         if password != '' or repass != '':
             pwd_valid: (bool, int, str) = password_validate(password, repass)
             if not pwd_valid[0]:
                 return json_failed(pwd_valid[1], pwd_valid[2])
             user.set_password(password)
         user.save()
+        user.person.save()
         auth.login(request, user)
 
         return json_success({})
@@ -69,7 +81,11 @@ class Auth:
     @staticmethod
     def register(request):
         username: str = request.POST.get('username')
-        first_name: str = request.POST.get('firstname')
+        nickname: str = request.POST.get('nickname')
+        gender: str = request.POST.get('gender')
+        phone: str = request.POST.get('phone')
+        email: str = request.POST.get('email')
+        type_: str = request.POST.get('type')
         password: str = request.POST.get('password')
         repass: str = request.POST.get('repass')
 
@@ -83,12 +99,27 @@ class Auth:
         if DjangoUser.objects.filter(username=username).exists():
             return json_failed(1, '用户名已存在')
 
+        if Person.objects.filter(phone=phone).exists():
+            return json_failed(4, '电话号码已被使用')
+
+        if Person.objects.filter(email=email).exists():
+            return json_failed(4, '电子邮箱已被使用')
+
         else:
             user: DjangoUser = DjangoUser.objects.create_user(
                 username=username,
                 password=password,
-                first_name=first_name,
             )
             user.save()
+            person: Person = Person.objects.create(
+                user=user,
+                name=nickname,
+                gender=gender,
+                phone=phone,
+                email=email,
+                type=type_,
+                data='{}',
+            )
+            person.save()
             auth.login(request, user)
             return json_success({})
