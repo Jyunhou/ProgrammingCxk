@@ -4,6 +4,7 @@ from django.db import models
 
 class Team(models.Model):
     name = models.CharField(max_length=63)
+    desc = models.TextField(default='')
     avatar = models.URLField(max_length=255, default='/static/images/default-team-avatar.png')
     manager = models.ForeignKey(User, models.CASCADE, related_name='manage_team_set')
     coach = models.ForeignKey(User, models.SET_NULL, related_name='teach_team_set', null=True)

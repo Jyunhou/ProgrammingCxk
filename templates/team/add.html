@@ -1,0 +1,89 @@
+{% extends 'base.html' %}
+
+{% block title %}建立战队{% endblock %}
+
+{% block body %}
+	<blockquote class="layui-elem-quote">
+		欢迎，请建立您的战队
+	</blockquote>
+	<div class="layui-form layui-tab-content" style="padding: 20px 0;">
+		<div class="layui-tab-item layui-show">
+			<div class="layui-form layui-form-pane">
+				<form method="post">
+					{% csrf_token %}
+					<div class="layui-form-item">
+						<label for="teamname" class="layui-form-label">名称</label>
+						<div class="layui-input-inline">
+							<input type="text" id="teamname" name="teamname"
+								   required autocomplete="off" lay-verify="required"
+								   class="layui-input">
+						</div>
+					</div>
+					<div class="layui-form-item layui-form-text">
+						<label class="layui-form-label">简介</label>
+						<div class="layui-input-block">
+							<textarea placeholder="请输入战队简介" name="desc" class="layui-textarea"></textarea>
+						</div>
+					</div>
+					<blockquote class="layui-elem-quote">
+						头像仅支持外部图像链接
+					</blockquote>
+					<div class="layui-form-item">
+						<label for="avatar" class="layui-form-label">头像</label>
+						<div class="layui-input-block">
+							<input type="text" id="avatar" name="avatar"
+								   autocomplete="off"
+								   class="layui-input">
+						</div>
+					</div>
+					<div class="layui-form-item">
+						<img src="/static/images/default-team-avatar.png" alt="头像" id="avatar-image"
+							 style="width:128px;height:128px;border-radius:2px;">
+						<button class="layui-btn" lay-filter="update-avatar" lay-submit>刷新头像</button>
+					</div>
+					<div class="layui-form-item">
+						<button id="btn-create" class="btn-submit layui-btn" lay-filter="create" lay-submit>
+							创建
+							<i class="layui-icon layui-icon-loading layui-anim layui-anim-rotate layui-anim-loop layui-hide"></i>
+						</button>
+					</div>
+				</form>
+			</div>
+		</div>
+	</div>
+{% endblock %}
+
+{% block script %}
+	<script>
+		layui.use(["form"], function () {
+			var form = layui.form;
+			form.on('submit(create)', function (data) {
+				if (layui.$("#btn-create").hasClass("layui-btn-disabled")) {
+					return false;
+				}
+				submitting();
+				postAndTip({
+					url: "{% url 'api-team-add' %}",
+					data: layui.$("form").serialize(),
+					csrfToken: "{{ csrf_token }}",
+					actionName: "创建",
+					success: function (result) {
+						setTimeout(function () {
+							window.location.href = result.data.redirect;
+						}, 1000);
+					},
+					fail: function (result) {
+						submitFailed();
+					},
+					showSuccessTip: true,
+				});
+				return false;
+			});
+
+			form.on('submit(update-avatar)', function (data) {
+				layui.$("#avatar-image")[0].src = layui.$("#avatar")[0].value;
+				return false;
+			});
+		});
+	</script>
+{% endblock %}

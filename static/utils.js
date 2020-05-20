@@ -83,11 +83,11 @@ function logout() {
 }
 
 function submitting() {
-	layui.$("#btn-submit").addClass("layui-btn-disabled");
-	layui.$("#btn-submit > i").removeClass("layui-hide");
+	layui.$(".btn-submit").addClass("layui-btn-disabled");
+	layui.$(".btn-submit > i").removeClass("layui-hide");
 }
 
 function submitFailed() {
-	layui.$("#btn-submit").removeClass("layui-btn-disabled");
-	layui.$("#btn-submit > i").addClass("layui-hide");
+	layui.$(".btn-submit").removeClass("layui-btn-disabled");
+	layui.$(".btn-submit > i").addClass("layui-hide");
 }

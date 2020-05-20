@@ -17,8 +17,11 @@ from django.contrib import admin
 from django.urls import path
 
 from esports.views import frontend
+from esports.views import api
 from esports.views.api import Auth as AuthApi
+from esports.views.api import Team as TeamApi
 from esports.views.api import User as UserApi
+from esports.views.frontend import Team as TeamPage
 from esports.views.frontend import User as UserPage
 
 urlpatterns = [
@@ -29,10 +32,23 @@ urlpatterns = [
     path('register/', frontend.register, name='register'),
     # 用户
     path('user/', UserPage.detail, name='user-detail'),
+    # 战队
+    path('team/add/', TeamPage.add, name='team-add'),
+    path('team/detail/<int:team_id>/', TeamPage.detail, name='team-detail'),
+    path('team/change/<int:team_id>/', TeamPage.change, name='team-change'),
+    path('team/list/', TeamPage.list, name='team-list'),
     # api
     # 用户
     path('api/login/', AuthApi.login, name='api-login'),
     path('api/logout/', AuthApi.logout, name='api-logout'),
     path('api/register/', AuthApi.register, name='api-register'),
     path('api/user/change/', UserApi.change, name='api-user-change'),
+    # 战队
+    path('api/team/add/', TeamApi.add, name='api-team-add'),
+    path('api/team/change/', TeamApi.change, name='api-team-change'),
+    path('api/team/disband/', TeamApi.disband, name='api-team-disband'),
+    path('api/team/list/', TeamApi.list, name='api-team-list'),
+    path('api/team/join/', TeamApi.join, name='api-team-join'),
+    # 教练
+    path('api/coach/chose/', api.coach_chose, name='api-coach-chose'),
 ]

@@ -1,0 +1,53 @@
+{% extends 'base.html' %}
+
+{% block title %}战队列表{% endblock %}
+
+{% block body %}
+	<table class="layui-hide" id="list"></table>
+
+	{% if request.user.person.type == 3 %}
+		<button type="button" class="layui-btn" onclick="window.location.href='{% url 'team-add' %}'">创建战队</button>
+	{% endif %}
+
+	<script type="text/html" id="barList">
+		<a class="layui-btn layui-btn-xs" lay-event="detail">查看</a>
+	</script>
+{% endblock %}
+
+{% block script %}
+	<script>
+		layui.use(["table"], function () {
+			var table = layui.table;
+			element = layui.element;
+
+			function renderTable(table) {
+				table.render({
+					elem: "#list",
+					height: "full",
+					width: "default",
+					url: "{% url 'api-team-list' %}", //数据接口
+					page: true,
+					limit: 16,
+					limits: [16, 32, 64, 128],
+					cols: [[
+						{field: "name", title: "名称", width: 476},
+						{field: "manager", title: "经理", width: 164},
+						{field: "coach", title: "教练", width: 120},
+						{fixed: "right", title: "操作", width: 86, align: "center", toolbar: "#barList"},
+					]],
+				});
+			}
+
+			//执行一个 table 实例
+			renderTable(table);
+
+			//监听行工具事件
+			table.on("tool", function (obj) { //注：tool 是工具条事件名，test 是 table 原始容器的属性 lay-filter="对应的值"
+				var layEvent = obj.event; //获得 lay-event 对应的值
+				if (layEvent === "detail") {
+					window.location.href = "/team/detail/" + obj.data.id + "/";
+				}
+			});
+		});
+	</script>
+{% endblock %}

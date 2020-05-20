@@ -4,7 +4,7 @@
 <head>
 	<meta charset="utf-8">
 	<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
-	<title>标题 - 电竞管理系统</title>
+	<title>{% block title %}{% endblock %} - 电竞管理系统</title>
 	<link rel="stylesheet" href="/static/layui/css/layui.css">
 </head>
 
@@ -47,7 +47,7 @@
 					</dl>
 				</li>
 				<li class="layui-nav-item"><a href="">选手信息</a></li>
-				<li class="layui-nav-item"><a href="">俱乐部战队</a></li>
+				<li class="layui-nav-item"><a href="{% url 'team-list' %}">战队</a></li>
 			</ul>
 		</div>
 	</div>
