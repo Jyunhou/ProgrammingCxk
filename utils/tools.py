@@ -6,7 +6,7 @@ from django.core.paginator import Paginator, PageNotAnInteger, EmptyPage
 from django.http import HttpResponse
 from django.shortcuts import render, redirect
 
-from ProgrammingCxk.settings import TIME_ZONE
+from ProgrammingCxk.settings import TIMEZONE
 
 PAGE_LIMIT: int = 10
 
@@ -28,7 +28,7 @@ def json_response(data: Dict) -> HttpResponse:
     class CJsonEncoder(json.JSONEncoder):
         def default(self, obj):
             if isinstance(obj, datetime):
-                return obj.astimezone(TIME_ZONE).strftime('%Y-%m-%d %H:%M:%S')
+                return obj.astimezone(TIMEZONE).strftime('%Y-%m-%d %H:%M:%S')
             elif isinstance(obj, date):
                 return obj.strftime('%Y-%m-%d')
             else:

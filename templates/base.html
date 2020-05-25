@@ -4,7 +4,7 @@
 <head>
 	<meta charset="utf-8">
 	<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
-	<title>{% block title %}{% endblock %} - 电竞管理系统</title>
+	<title>{% block title %}首页{% endblock %} - 电竞管理系统</title>
 	<link rel="stylesheet" href="/static/layui/css/layui.css">
 </head>
 
@@ -14,15 +14,22 @@
 		<div class="layui-logo">电竞管理系统</div>
 		<ul class="layui-nav layui-layout-right">
 			{% if request.user.is_authenticated %}
-				<li class="layui-nav-item">
+				<li class="layui-nav-item" id="user">
 					<a href="javascript:">
 						<img src="{{ request.user.person.avatar }}" alt="头像" class="layui-nav-img">
 						{{ request.user.person.name }}
 						<span class="layui-nav-more"></span>
 					</a>
 					<dl class="layui-nav-child layui-anim layui-anim-upbit">
-						<dd><a href="{% url 'user-detail' %}">用户设置</a></dd>
-						<dd><a href="">全部消息</a></dd>
+						<dd>
+							<a href="{% url 'user-detail' %}">用户设置</a>
+						</dd>
+						<dd>
+							<hr>
+						</dd>
+						<dd id="msg-last">
+							<a href="{% url 'msg-list' %}">全部消息</a>
+						</dd>
 					</dl>
 				</li>
 				<li class="layui-nav-item"><a href="javascript:" onclick="logout()">注销</a></li>
@@ -70,6 +77,21 @@
 <script>
 	layui.use('element', function () {
 		var element = layui.element;
+		var $ = layui.$;
+
+		get({
+			url: "{% url 'api-msg-last' %}",
+			success: result => {
+				let msgLast = $("#msg-last");
+				for (let msg of result.data) {
+					msgLast.before(`<dd><a href="${msg.href}">${msg.title}<span class="layui-badge-dot"></a></dd>`);
+				}
+				if (result.data.length > 0) {
+					let tip = `<span class="layui-badge">${result.data.length}</span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;`;
+					$("#user .layui-nav-more").before(tip);
+				}
+			},
+		});
 	});
 </script>
 {% block script %}{% endblock %}

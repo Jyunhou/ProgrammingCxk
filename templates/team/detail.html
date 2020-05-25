@@ -23,7 +23,10 @@
 		教练：{% if team.coach %}{{ team.coach.person.name }}{% else %}暂无{% endif %}
 	</div>
 	{% if request.user.person.type == 1 and request.user.person.team is None %}
-		<button class="layui-btn" lay-filter="join" lay-submit>申请加入</button>
+		<button class="layui-btn btn-submit" lay-filter="join" lay-submit>
+			申请加入
+			<i class="layui-icon layui-icon-loading layui-anim layui-anim-rotate layui-anim-loop layui-hide"></i>
+		</button>
 	{% endif %}
 {% endblock %}
 
@@ -33,16 +36,33 @@
 			var form = layui.form;
 
 			form.on("submit(join)", function (data) {
-				layer.confirm("确认申请加入战队：{{ team.name }} 吗？", function (index) {
+				if (isSubmitting()) {
+					return false;
+				}
+				layer.prompt({
+					formType: 2,
+					title: "申请加入战队：{{ team.name }}",
+					value: "仰慕已久，申请加入{{ team.name }}！",
+					area: ["240px", "80px"],
+				}, function (value, index, elem) {
 					layer.close(index);
+					submitting();
 					postAndTip({
 						url: "{% url 'api-team-join' %}",
-						data: {id: {{ request.user.id }}},
+						data: {
+							userId: {{ request.user.id }},
+							teamId: {{ team.id }},
+							desc: value,
+						},
 						csrfToken: "{{ csrf_token }}",
 						actionName: "申请",
 						success: function (result) {
+							setTimeout(function () {
+								window.location.reload();
+							}, 1000);
 						},
 						fail: function (result) {
+							submitFailed();
 						},
 						showSuccessTip: true,
 					});

@@ -91,3 +91,7 @@ function submitFailed() {
 	layui.$(".btn-submit").removeClass("layui-btn-disabled");
 	layui.$(".btn-submit > i").addClass("layui-hide");
 }
+
+function isSubmitting() {
+	return layui.$(".btn-submit").hasClass("layui-btn-disabled");
+}

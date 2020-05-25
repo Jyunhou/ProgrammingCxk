@@ -3,7 +3,9 @@ from django.contrib.auth.models import User as DjangoUser
 from django.core.exceptions import PermissionDenied
 from django.urls import reverse
 
-from esports.models import Person, Team as TeamModel
+from esports.models import Message as MsgStatus
+from esports.models import Person, TeamApplication, ReceiveMessage, SendMessage
+from esports.models import Team as TeamModel
 from esports.views.frontend import manager_required
 from utils.tools import json_success, json_failed, json_list
 
@@ -211,8 +213,39 @@ class Team:
 
     @staticmethod
     def join(request):
-        user_id: str = request.POST.get('id')
-        # TODO 加入战队；建表：战队申请
+        user_id: str = request.POST.get('userId')
+        team_id: str = request.POST.get('teamId')
+        desc: str = request.POST.get('desc')
+
+        user: DjangoUser = DjangoUser.objects.filter(id=user_id).first()
+        team: TeamModel = TeamModel.objects.filter(id=team_id).first()
+
+        if user is None or team is None:
+            return json_failed(1, '用户或战队不存在')
+        if user.person.team is not None:
+            return json_failed(2, '已经加入了战队')
+        if user.person.type != Person.PERSON_TYPE_PLAYER:
+            return json_failed(3, '只有选手可以加入战队')
+        if TeamApplication.objects.filter(
+                user=user, team=team, status=TeamApplication.STATUS_PENDING).exists():
+            return json_failed(4, '待批准中')
+
+        TeamApplication.objects.create(
+            user=user,
+            team=team,
+            desc=desc,
+        )
+        send_message: SendMessage = SendMessage.objects.create(
+            title='战队加入申请',
+            content='%s申请加入您的战队%s：\n%s' % (user.person.name, team.name, desc),
+            user=None,
+        )
+        ReceiveMessage.objects.create(
+            user=team.manager,
+            send_message=send_message,
+        )
+
+        return json_success({})
 
 
 def coach_chose(request):
@@ -225,3 +258,27 @@ def coach_chose(request):
         'coachId': coach.id,
         'coachName': coach.name,
     })
+
+
+class Message:
+    @staticmethod
+    def last(request):
+        if not request.user.is_authenticated:
+            return json_failed(1, '未登录')
+
+        msgs = ReceiveMessage.objects.filter(
+            user=request.user,
+            is_read=False,
+            status=MsgStatus.STATUS_NORMAL,
+        ).select_related('send_message')[:10]
+
+        data = []
+        for msg in msgs:
+            data.append({
+                'href': reverse('msg-list') + '?id=' + str(msg.id),
+                'title': msg.send_message.title,
+                'content': msg.send_message.content,
+                'datetime': msg.send_message.datetime,
+            })
+
+        return json_success(data)

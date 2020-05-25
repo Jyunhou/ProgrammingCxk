@@ -16,11 +16,12 @@ Including another URLconf
 from django.contrib import admin
 from django.urls import path
 
-from esports.views import frontend
 from esports.views import api
+from esports.views import frontend
 from esports.views.api import Auth as AuthApi
 from esports.views.api import Team as TeamApi
 from esports.views.api import User as UserApi
+from esports.views.frontend import Message as MsgPage
 from esports.views.frontend import Team as TeamPage
 from esports.views.frontend import User as UserPage
 
@@ -37,6 +38,8 @@ urlpatterns = [
     path('team/detail/<int:team_id>/', TeamPage.detail, name='team-detail'),
     path('team/change/<int:team_id>/', TeamPage.change, name='team-change'),
     path('team/list/', TeamPage.list, name='team-list'),
+    # 消息
+    path('msg/list/', MsgPage.list, name='msg-list'),
     # api
     # 用户
     path('api/login/', AuthApi.login, name='api-login'),
@@ -51,4 +54,6 @@ urlpatterns = [
     path('api/team/join/', TeamApi.join, name='api-team-join'),
     # 教练
     path('api/coach/chose/', api.coach_chose, name='api-coach-chose'),
+    # 消息
+    path('api/msg/last/', api.Message.last, name='api-msg-last'),
 ]

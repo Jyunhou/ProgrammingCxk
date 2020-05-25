@@ -44,14 +44,30 @@ class Message:
 class SendMessage(models.Model):
     title = models.CharField(max_length=255)
     content = models.TextField()
-    person = models.ForeignKey(Person, models.SET_NULL, null=True)
+    user = models.ForeignKey(User, models.SET_NULL, null=True)
     datetime = models.DateTimeField(auto_now_add=True)
-    status = models.SmallIntegerField(choices=Message.STATUS_CHOICES, default=1)
+    status = models.SmallIntegerField(choices=Message.STATUS_CHOICES, default=Message.STATUS_NORMAL)
 
 
 class ReceiveMessage(models.Model):
-    person = models.ForeignKey(Person, models.CASCADE)
-    send_message = models.ForeignKey(SendMessage, models.CASCADE)
+    user = models.ForeignKey(User, models.CASCADE)
+    send_message = models.ForeignKey(SendMessage, models.CASCADE, null=True)
     datetime = models.DateTimeField(auto_now_add=True)
-    is_read = models.BooleanField()
-    status = models.SmallIntegerField(choices=Message.STATUS_CHOICES, default=1)
+    is_read = models.BooleanField(default=False)
+    status = models.SmallIntegerField(choices=Message.STATUS_CHOICES, default=Message.STATUS_NORMAL)
+
+
+class TeamApplication(models.Model):
+    STATUS_PENDING = 0
+    STATUS_REFUSE = 2
+    STATUS_ACCEPT = 1
+    STATUS_CHOICES = (
+        (STATUS_PENDING, '待批准'),
+        (STATUS_ACCEPT, '已通过'),
+        (STATUS_REFUSE, '已拒绝'),
+    )
+    time = models.DateTimeField(auto_now_add=True)
+    team = models.ForeignKey(Team, models.CASCADE)
+    user = models.ForeignKey(User, models.CASCADE)
+    desc = models.CharField(max_length=255)
+    status = models.SmallIntegerField(choices=STATUS_CHOICES, default=STATUS_PENDING)

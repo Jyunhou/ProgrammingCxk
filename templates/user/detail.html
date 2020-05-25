@@ -100,7 +100,7 @@
 						</div>
 					</div>
 					<div class="layui-form-item">
-						<button type="submit" id="btn-submit" class="layui-btn" lay-filter="register" lay-submit>
+						<button type="submit" class="layui-btn btn-submit" lay-filter="register" lay-submit>
 							修改
 							<i class="layui-icon layui-icon-loading layui-anim layui-anim-rotate layui-anim-loop layui-hide"></i>
 						</button>
@@ -116,6 +116,9 @@
 		layui.use(["form"], function () {
 			var form = layui.form;
 			form.on('submit(register)', function (data) {
+				if (isSubmitting()) {
+					return false;
+				}
 				submitting();
 				postAndTip({
 					url: "{% url 'api-user-change' %}",

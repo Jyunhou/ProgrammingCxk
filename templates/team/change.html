@@ -107,7 +107,7 @@
 			});
 
 			form.on("submit(disband)", function (data) {
-				if (layui.$("#btn-disband").hasClass("layui-btn-disabled")) {
+				if (isSubmitting()) {
 					return false;
 				}
 				layer.confirm("确定解散战队吗？操作无法撤销！", function (index) {

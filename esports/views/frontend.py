@@ -74,3 +74,10 @@ class Team:
     @staticmethod
     def list(request):
         return render(request, 'team/list.html')
+
+
+class Message:
+    @staticmethod
+    @authenticated_required
+    def list(request):
+        pass
