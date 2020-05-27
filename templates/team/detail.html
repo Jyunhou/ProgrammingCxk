@@ -23,8 +23,18 @@
 		教练：{% if team.coach %}{{ team.coach.person.name }}{% else %}暂无{% endif %}
 	</div>
 	{% if request.user.person.type == 1 and request.user.person.team is None %}
-		<button class="layui-btn btn-submit" lay-filter="join" lay-submit>
-			申请加入
+		{% if in_app %}
+			加入申请审批中
+		{% else %}
+			<button class="layui-btn btn-submit" lay-filter="join" lay-submit>
+				申请加入
+				<i class="layui-icon layui-icon-loading layui-anim layui-anim-rotate layui-anim-loop layui-hide"></i>
+			</button>
+		{% endif %}
+	{% endif %}
+	{% if request.user.person in team.person_set.all %}
+		<button class="layui-btn layui-btn-danger btn-submit" lay-filter="exit" lay-submit>
+			退出战队
 			<i class="layui-icon layui-icon-loading layui-anim layui-anim-rotate layui-anim-loop layui-hide"></i>
 		</button>
 	{% endif %}
@@ -56,6 +66,33 @@
 						},
 						csrfToken: "{{ csrf_token }}",
 						actionName: "申请",
+						success: function (result) {
+							setTimeout(function () {
+								window.location.reload();
+							}, 1000);
+						},
+						fail: function (result) {
+							submitFailed();
+						},
+						showSuccessTip: true,
+					});
+				});
+				return false;
+			});
+
+			form.on("submit(exit)", function (data) {
+				if (isSubmitting()) {
+					return false;
+				}
+				layer.confirm("确定退出战队？该操作无法取消！", function () {
+					submitting();
+					postAndTip({
+						url: "{% url 'api-team-exit' %}",
+						data: {
+							teamId: {{ team.id }},
+						},
+						csrfToken: "{{ csrf_token }}",
+						actionName: "退出",
 						success: function (result) {
 							setTimeout(function () {
 								window.location.reload();

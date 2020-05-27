@@ -1,0 +1,96 @@
+{% extends 'base.html' %}
+
+{% block title %}战队加入申请处理{% endblock %}
+
+{% block body %}
+	<div class="layui-form layui-tab-content" style="padding: 20px 0;">
+		<div class="layui-tab-item layui-show">
+			<div class="layui-form layui-form-pane">
+				<form>
+					<div class="layui-form-item">
+						<label for="username" class="layui-form-label">选手</label>
+						<div class="layui-input-inline">
+							<input type="text" id="username" value="{{ app.user.person.name }}"
+								   readonly class="layui-input">
+						</div>
+					</div>
+					<div class="layui-form-item">
+						<label for="username" class="layui-form-label">申请时间</label>
+						<div class="layui-input-inline">
+							<input type="text" id="username" value="{{ app.time }}"
+								   readonly class="layui-input">
+						</div>
+					</div>
+					<div class="layui-form-item layui-form-text">
+						<label for="username" class="layui-form-label">申请说明</label>
+						<div class="layui-input-block">
+							<textarea name="desc" class="layui-textarea" readonly>{{ app.desc }}</textarea>
+						</div>
+					</div>
+					{# TODO 这里应该有一些战绩显示 #}
+				</form>
+			</div>
+		</div>
+		{% if app.status == 0 %}
+			<button id="btn-accept" class="btn-submit layui-btn layui-btn-normal">
+				同意
+				<i class="layui-icon layui-icon-loading layui-anim layui-anim-rotate layui-anim-loop layui-hide"></i>
+			</button>
+			<button id="btn-refuse" class="btn-submit layui-btn layui-btn-danger">
+				拒绝
+				<i class="layui-icon layui-icon-loading layui-anim layui-anim-rotate layui-anim-loop layui-hide"></i>
+			</button>
+		{% elif app.status == 1 %}
+			已同意
+		{% elif app.status == 2 %}
+			已拒绝
+		{% endif %}
+	</div>
+{% endblock %}
+
+{% block script %}
+	<script>
+		layui.use(["layer"], function () {
+			var $ = layui.$;
+			var layer = layui.layer;
+
+			$("#btn-accept").on("click", function () {
+				layer.confirm("确定同意申请吗？", function (index) {
+					layer.close(index);
+					submit(true);
+				});
+			});
+			$("#btn-refuse").on("click", function () {
+				layer.confirm("确定拒绝申请吗？", function (index) {
+					layer.close(index);
+					submit(false);
+				});
+			});
+
+			function submit(accept) {
+				if (isSubmitting()) {
+					return;
+				}
+				submitting();
+				postAndTip({
+					url: "{% url 'api-team-app' %}",
+					data: {
+						id: "{{ app.id }}",
+						accept: accept,
+					},
+					csrfToken: "{{ csrf_token }}",
+					actionName: "操作",
+					success: function (result) {
+						setTimeout(function () {
+							history.back(-1);
+						}, 1000);
+					},
+					fail: function (result) {
+						submitFailed();
+					},
+					showSuccessTip: true,
+				});
+			}
+		});
+	</script>
+{% endblock %}

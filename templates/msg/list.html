@@ -1,0 +1,82 @@
+{% extends 'base.html' %}
+
+{% block title %}消息{% endblock %}
+
+{% block body %}
+	<div class="layui-collapse" lay-filter="msg-list" id="msg-list"></div>
+	<div id="page"></div>
+{% endblock %}
+
+{% block script %}
+	<template id="msg-template">
+		<div class="layui-colla-item">
+			<h2 class="layui-colla-title" data-id="%id%">%title%</h2>
+			<div class="layui-colla-content%show%">
+				<p>%content%</p>
+			</div>
+		</div>
+	</template>
+
+	<script>
+		layui.use(["element", "laypage"], function () {
+			var element = layui.element;
+			var laypage = layui.laypage;
+			var $ = layui.$;
+
+			// 加载消息列表
+			get({
+				url: "{% url 'api-msg-list' %}",
+				data: {limit: 16},
+				success: result => {
+					let msgLast = $("#msg-list");
+					for (let msg of result.data) {
+						title = `${msg.title} - ${msg.datetime}`;
+						if (!msg.isRead) {
+							title += "&nbsp;&nbsp;<span class=\"layui-badge-dot\">";
+						}
+						html = $("#msg-template")[0].innerHTML
+							.replace("%id%", msg.id)
+							.replace("%title%", title)
+							.replace("%content%", msg.content);
+						html = html.replace("%show%", msg.id.toString() === getParam("id") ? " layui-show" : "");
+						msgLast.append(html);
+					}
+					element.render("collapse", "msg-list");
+				},
+			});
+
+			//监听折叠
+			element.on("collapse(msg-list)", function (data) {
+				if (data.show) {
+					readMsg(data.title[0].dataset.id);
+					titleHTML = data.title[0].innerHTML;
+					titleHTML = titleHTML.replace("<span class=\"layui-badge-dot\"></span>", "");
+					data.title[0].innerHTML = titleHTML;
+				}
+			});
+
+			laypage.render({
+				elem: "page",
+				count: 16,
+				layout: ['count', 'prev', 'page', 'next', 'limit', 'refresh', 'skip'],
+				jump: function (obj) {
+					console.log(obj)// TODO 分页
+				}
+			});
+
+			// 已读消息
+			function readMsg(id) {
+				post({
+					url: "{% url 'api-msg-read' %}",
+					data: {id: id},
+					csrfToken: "{{ csrf_token }}",
+				});
+			}
+
+			id = getParam("id");
+			if (id !== null) {
+				readMsg(id);
+			}
+		});
+	</script>
+{% endblock %}

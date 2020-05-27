@@ -23,16 +23,61 @@ function postAndTip(param) {
 				if (showSuccessTip) {
 					layer.msg(actionName + "成功");
 				}
-				success(result);
+				if (success !== undefined) {
+					success(result);
+				}
 			} else {
 				layer.msg(actionName + "失败，" + result.msg);
-				fail(result);
+				if (fail !== undefined) {
+					fail(result);
+				}
 			}
 		},
 		error: function (xhr) {
 			console.log(xhr);
 			layer.msg("请求" + actionName + "失败");
-			fail(result);
+			if (fail !== undefined) {
+				fail(result);
+			}
+		},
+	});
+}
+
+function post(param) {
+	var url = param.url;
+	var csrfToken = param.csrfToken;
+	var data = param.data;
+	var actionName = param.actionName;
+	var success = param.success;
+	var fail = param.fail;
+
+	layui.$.ajaxSetup({
+		beforeSend: function (xhr) {
+			xhr.setRequestHeader("X-CSRFToken", csrfToken);
+		}
+	});
+	layui.$.ajax({
+		url: url,
+		type: "POST",
+		dataType: "json",
+		data: data,
+		async: false,
+		success: function (result) {
+			if (result.code === 0) {
+				if (success !== undefined) {
+					success(result);
+				}
+			} else {
+				if (fail !== undefined) {
+					fail(result);
+				}
+			}
+		},
+		error: function (xhr) {
+			console.log(xhr);
+			if (fail !== undefined) {
+				fail(result);
+			}
 		},
 	});
 }

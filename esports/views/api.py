@@ -7,7 +7,7 @@ from esports.models import Message as MsgStatus
 from esports.models import Person, TeamApplication, ReceiveMessage, SendMessage
 from esports.models import Team as TeamModel
 from esports.views.frontend import manager_required
-from utils.tools import json_success, json_failed, json_list
+from utils.tools import json_success, json_failed, json_list, api_paging
 
 
 def str_validate(string: str) -> bool:
@@ -230,19 +230,59 @@ class Team:
                 user=user, team=team, status=TeamApplication.STATUS_PENDING).exists():
             return json_failed(4, '待批准中')
 
-        TeamApplication.objects.create(
+        app: TeamApplication = TeamApplication.objects.create(
             user=user,
             team=team,
             desc=desc,
         )
-        send_message: SendMessage = SendMessage.objects.create(
-            title='战队加入申请',
-            content='%s申请加入您的战队%s：\n%s' % (user.person.name, team.name, desc),
-            user=None,
+        button_html = '<button class="layui-btn layui-btn-xs" onclick="window.location=\'%s\'">前往处理</button>' \
+                      % reverse('team-app', args=(app.id,))
+        generate_message(
+            '战队加入申请',
+            '%s申请加入您的战队“%s”：<br>%s%s' % (user.person.name, team.name, desc, button_html),
+            None, team.manager,
         )
-        ReceiveMessage.objects.create(
-            user=team.manager,
-            send_message=send_message,
+
+        return json_success({})
+
+    @staticmethod
+    def application(request):
+        app_id: str = request.POST.get('id')
+        accept: bool = request.POST.get('accept') == 'true'
+
+        app: TeamApplication = TeamApplication.objects.filter(id=app_id).first()
+        if accept:
+            app.status = TeamApplication.STATUS_ACCEPT
+            app.user.person.team = app.team
+            app.user.person.save()
+            title = '战队加入申请已通过'
+            button_html = '<button class="layui-btn layui-btn-xs" onclick="window.location=\'%s\'">查看战队</button>' \
+                          % reverse('team-detail', args=(app.team.id,))
+            content = '您申请加入战队“%s”已经通过。%s' % (app.team.name, button_html)
+        else:
+            app.status = TeamApplication.STATUS_REFUSE
+            title = '战队加入申请被拒绝'
+            content = '您申请加入战队“%s”已被拒绝。' % app.team.name
+        app.save()
+        generate_message(title, content, None, app.user)
+
+        return json_success({})
+
+    @staticmethod
+    def exit(request):
+        team_id: str = request.POST.get('teamId')
+
+        team: TeamModel = TeamModel.objects.filter(id=team_id).first()
+
+        if request.user.person.team != team:
+            return json_failed(1, '战队错误')
+        request.user.person.team = None
+        request.user.person.save()
+
+        generate_message(
+            '战队成员退出',
+            '%s（用户名：%s）已退出您的战队“%s”。' % (request.user.person.name, request.user.username, team.name),
+            None, team.manager,
         )
 
         return json_success({})
@@ -261,6 +301,8 @@ def coach_chose(request):
 
 
 class Message:
+    MAX_LAST_NUM: int = 10
+
     @staticmethod
     def last(request):
         if not request.user.is_authenticated:
@@ -270,7 +312,7 @@ class Message:
             user=request.user,
             is_read=False,
             status=MsgStatus.STATUS_NORMAL,
-        ).select_related('send_message')[:10]
+        ).select_related('send_message').order_by('-datetime')[:Message.MAX_LAST_NUM]
 
         data = []
         for msg in msgs:
@@ -282,3 +324,55 @@ class Message:
             })
 
         return json_success(data)
+
+    @staticmethod
+    def list(request):
+        if not request.user.is_authenticated:
+            return json_failed(1, '未登录')
+
+        limit: int = int(request.GET.get('limit'))
+
+        msgs = ReceiveMessage.objects.filter(
+            user=request.user,
+            status=MsgStatus.STATUS_NORMAL,
+        ).select_related('send_message').order_by('-datetime')
+
+        paged = api_paging(request, msgs, limit)
+
+        data = []
+        for msg in paged['list']:
+            data.append({
+                'id': msg.id,
+                'title': msg.send_message.title,
+                'content': msg.send_message.content,
+                'datetime': msg.send_message.datetime,
+                'isRead': msg.is_read,
+                'type': 1,
+            })
+
+        return json_success(data)
+
+    @staticmethod
+    def read(request):
+        msg_id: str = request.POST.get('id')
+
+        msg: ReceiveMessage = ReceiveMessage.objects.filter(id=msg_id).first()
+        msg.is_read = True
+        msg.save()
+
+        return json_success({})
+
+
+def generate_message(title: str, content: str, from_user: DjangoUser or None, to_user: DjangoUser
+                     ) -> (SendMessage, ReceiveMessage):
+    send_msg: SendMessage = SendMessage.objects.create(
+        title=title,
+        content=content,
+        user=from_user,
+    )
+    receive_msg: ReceiveMessage = ReceiveMessage.objects.create(
+        user=to_user,
+        send_message=send_msg,
+    )
+
+    return (send_msg, receive_msg)
