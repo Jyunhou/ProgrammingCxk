@@ -51,4 +51,6 @@ urlpatterns = [
     path('api/team/join/', TeamApi.join, name='api-team-join'),
     # 教练
     path('api/coach/chose/', api.coach_chose, name='api-coach-chose'),
+    #智能BP
+    path('bp/',frontend.bp, name='bp'),
 ]
