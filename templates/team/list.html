@@ -3,15 +3,17 @@
 {% block title %}战队列表{% endblock %}
 
 {% block body %}
-	<table class="layui-hide" id="list"></table>
+	<div style="padding: 20px 15px">
+		<table class="layui-hide" id="list"></table>
 
-	{% if request.user.person.type == 3 %}
-		<button type="button" class="layui-btn" onclick="window.location.href='{% url 'team-add' %}'">创建战队</button>
-	{% endif %}
+		{% if request.user.person.type == 3 %}
+			<button type="button" class="layui-btn" onclick="window.location.href='{% url 'team-add' %}'">创建战队</button>
+		{% endif %}
 
-	<script type="text/html" id="barList">
-		<a class="layui-btn layui-btn-xs" lay-event="detail">查看</a>
-	</script>
+		<script type="text/html" id="barList">
+			<a class="layui-btn layui-btn-xs" lay-event="detail">查看</a>
+		</script>
+	</div>
 {% endblock %}
 
 {% block script %}

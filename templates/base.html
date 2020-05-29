@@ -6,6 +6,7 @@
 	<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
 	<title>{% block title %}首页{% endblock %} - 电竞管理系统</title>
 	<link rel="stylesheet" href="/static/layui/css/layui.css">
+	{% block head %}{% endblock %}
 </head>
 
 <body class="layui-layout-body">
@@ -51,7 +52,6 @@
 					</a>
 					<dl class="layui-nav-child">
 						<dd><a href="javascript:">项目名称</a></dd>
-						<!-- <dd><a id="navBP" href="javascript:;" data-href="{% url 'bp' %}">智能BP</a></dd> -->
 					</dl>
 				</li>
 				<li class="layui-nav-item"><a href="">选手信息</a></li>
@@ -63,9 +63,7 @@
 
 	<div class="layui-body">
 		<!-- 内容主体区域 -->
-		<div style="padding: 15px;" id="Content">
-			{% block body %}{% endblock %}
-		</div>
+		{% block body %}{% endblock %}
 	</div>
 
 	<div class="layui-footer">
@@ -93,11 +91,6 @@
 					$("#user .layui-nav-more").before(tip);
 				}
 			},
-		});
-		
-		$("#navBP").click(function () {
-			var url = $(this).data('href');
-			$('#Content').load(url);
 		});
 	});
 </script>

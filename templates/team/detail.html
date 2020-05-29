@@ -1,43 +1,47 @@
 {% extends 'base.html' %}
 
-{% block title %}{{ team.name }}{% endblock %}TODO gaaulin,xynsau
+{% block title %}{{ team.name }}{% endblock %}
 
 {% block body %}
-	<blockquote class="layui-elem-quote">
-		欢迎来到{{ team.name }}
-		{% if team.manager == request.user %}，经理{% elif team.coach == request.user %}
-			，教练{% elif request.user.person in team.person_set.all %}，选手{% endif %}。
-		{% if team.manager == request.user %}
-			<button class="layui-btn" onclick="window.location.href='{% url 'team-change' team.id %}'">修改战队信息</button>
+	<div style="padding: 20px 15px;">
+		<blockquote class="layui-elem-quote">
+			欢迎来到{{ team.name }}
+			{% if team.manager == request.user %}，经理{% elif team.coach == request.user %}
+				，教练{% elif request.user.person in team.person_set.all %}，选手{% endif %}。
+			{% if team.manager == request.user %}
+				<button class="layui-btn" onclick="window.location.href='{% url 'team-change' team.id %}'">
+					修改战队信息
+				</button>
+			{% endif %}
+		</blockquote>
+		<div style="padding: 20px 0;">
+			<img src="/static/images/default-team-avatar.png" alt="头像" id="avatar-image"
+				 style="width:128px;height:128px;border-radius:2px;">
+			{{ team.desc }}
+		</div>
+		<div class="layui-form-item">
+			经理：{{ team.manager.person.name }}
+		</div>
+		<div class="layui-form-item">
+			教练：{% if team.coach %}{{ team.coach.person.name }}{% else %}暂无{% endif %}
+		</div>
+		{% if request.user.person.type == 1 and request.user.person.team is None %}
+			{% if in_app %}
+				加入申请审批中
+			{% else %}
+				<button class="layui-btn btn-submit" lay-filter="join" lay-submit>
+					申请加入
+					<i class="layui-icon layui-icon-loading layui-anim layui-anim-rotate layui-anim-loop layui-hide"></i>
+				</button>
+			{% endif %}
 		{% endif %}
-	</blockquote>
-	<div style="padding: 20px 0;">
-		<img src="/static/images/default-team-avatar.png" alt="头像" id="avatar-image"
-			 style="width:128px;height:128px;border-radius:2px;">
-		{{ team.desc }}
-	</div>
-	<div class="layui-form-item">
-		经理：{{ team.manager.person.name }}
-	</div>
-	<div class="layui-form-item">
-		教练：{% if team.coach %}{{ team.coach.person.name }}{% else %}暂无{% endif %}
-	</div>
-	{% if request.user.person.type == 1 and request.user.person.team is None %}
-		{% if in_app %}
-			加入申请审批中
-		{% else %}
-			<button class="layui-btn btn-submit" lay-filter="join" lay-submit>
-				申请加入
+		{% if request.user.person in team.person_set.all %}
+			<button class="layui-btn layui-btn-danger btn-submit" lay-filter="exit" lay-submit>
+				退出战队
 				<i class="layui-icon layui-icon-loading layui-anim layui-anim-rotate layui-anim-loop layui-hide"></i>
 			</button>
 		{% endif %}
-	{% endif %}
-	{% if request.user.person in team.person_set.all %}
-		<button class="layui-btn layui-btn-danger btn-submit" lay-filter="exit" lay-submit>
-			退出战队
-			<i class="layui-icon layui-icon-loading layui-anim layui-anim-rotate layui-anim-loop layui-hide"></i>
-		</button>
-	{% endif %}
+	</div>
 {% endblock %}
 
 {% block script %}
