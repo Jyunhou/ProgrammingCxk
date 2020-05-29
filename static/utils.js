@@ -96,14 +96,20 @@ function get(param) {
 		async: false,
 		success: function (result) {
 			if (result.code === 0) {
-				success(result);
+				if (success !== undefined) {
+					success(result);
+				}
 			} else {
-				fail(result);
+				if (fail !== undefined) {
+					fail(result);
+				}
 			}
 		},
 		error: function (xhr) {
 			console.log(xhr);
-			fail(result);
+			if (fail !== undefined) {
+				fail(result);
+			}
 		},
 	});
 }
