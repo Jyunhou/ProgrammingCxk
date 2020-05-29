@@ -61,4 +61,6 @@ urlpatterns = [
     path('api/msg/last/', api.Message.last, name='api-msg-last'),
     path('api/msg/list/', api.Message.list, name='api-msg-list'),
     path('api/msg/read/', api.Message.read, name='api-msg-read'),
+    # 智能BP
+    path('bp/', frontend.bp, name='bp'),
 ]

@@ -18,6 +18,9 @@ def manager_required(func):
 def index(request):
     return render(request, 'base.html')
 
+def bp(request):
+    return render(request, 'bp.html')
+
 
 def login(request):
     if request.user.is_authenticated:

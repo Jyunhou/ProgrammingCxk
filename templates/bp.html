@@ -1,0 +1,675 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+	<meta charset="UTF-8">
+	<title>Document</title>
+	<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.4.1/dist/css/bootstrap.min.css"
+		integrity="sha384-Vkoo8x4CGsO3+Hhxv8T/Q5PaXtkKtu6ug5TOeNV6gBiFeWPGFN9MuhOf23Q9Ifjh" crossorigin="anonymous">
+	<script src="https://cdn.staticfile.org/jquery/1.10.2/jquery.min.js"></script>
+	<style>
+		* {
+			padding: 0;
+			margin: 0;
+		}
+
+		ol,
+		ul,
+		li {
+			list-style: none;
+		}
+
+		a {
+			text-decoration: none;
+			display: block;
+			color: #000;
+		}
+
+		img {
+			height: 80px;
+			width: 80px;
+			border: none;
+			display: block;
+		}
+
+		html body {
+			min-width: 1200px;
+		}
+
+		.lenger {
+			display: flex;
+			flex-wrap: wrap;
+			align-content: space-between;
+		}
+
+		.lenger>li {
+			text-align: center;
+			margin-right: 5px;
+			font-size: 12px;
+		}
+
+		/*image{
+			height: 50px;
+			width: 50px;
+			background-size: 50px 50px;
+		}*/
+		.allbg {
+			width: 100%;
+			height: 100%;
+			background-image: url("../static/images/bp.png");
+			background-size: 100% 100%;
+			background-repeat: no-repeat;
+			position: absolute;
+		}
+
+		.overflow-auto {
+			position: absolute;
+			top: 20%;
+			left: 20%;
+			width: 60%;
+			height: 65%;
+		}
+
+		.overflow-auto::-webkit-scrollbar {
+			display: none;
+		}
+
+		.leftTop {
+			left: 5%;
+			top: 5%;
+			position: absolute;
+			display: flex;
+			flex-wrap: wrap;
+			align-content: space-between;
+			vertical-align: bottom;
+		}
+
+		.leftTop>div {
+
+			border: 1px solid blue;
+			height: 80px;
+			width: 80px;
+			margin-right: 10px;
+		}
+		/*.leftTimeing{
+			height: 40px;
+			width: 40px;
+			border: 1px solid #000000;
+		}*/
+		.rightTop {
+			right: 5%;
+			top: 5%;
+			position: absolute;
+			display: flex;
+			flex-wrap: wrap;
+			align-content: space-between;
+		}
+
+		.rightTop>div {
+
+			border: 1px solid red;
+			height: 80px;
+			width: 80px;
+			margin-right: 10px;
+		}
+		.left {
+			left: 5%;
+			top: 30%;
+			position: absolute;
+			display: flex;
+  			flex-direction: column;
+  			justify-content: space-between;
+		}
+
+		.left>div {
+
+			border: 2px solid black;
+			height: 80px;
+			width: 80px;
+			margin-bottom: 20px;
+		}
+		.right {
+			right: 5%;
+			top: 30%;
+			position: absolute;
+			display: flex;
+  			flex-direction: column;
+  			justify-content: space-between;
+		}
+
+		.right>div {
+
+			border: 2px solid black;
+			height: 80px;
+			width: 80px;
+			margin-bottom: 20px;
+		}
+		.submit{
+			width: 80px;
+			height: 50px;
+			bottom: 5%;
+			left: 46%;
+			position: absolute;
+		}
+	</style>
+</head>
+
+<body>
+
+	<div class="allbg">
+		<div class="leftTop">
+			<div class="blueBan1"><img src="" alt=""></div>
+			<div class="blueBan2"><img src="" alt=""></div>
+			<div class="blueBan3"><img src="" alt=""></div>
+			<div class="blueBan4"><img src="" alt=""></div>
+			<div class="blueBan5"><img src="" alt=""></div>
+			<div class="leftTimeing" style="height: 40px;width: 40px;border: 1px solid #000000;text-align: center;line-height: 40px">30</div>
+		</div>
+		<div class="rightTop">
+			<div class="rightTimeing" style="height: 40px;width: 40px;border: 1px solid #000000;text-align: center;line-height: 40px">30</div>
+			<div class="redBan5"><img src="" alt=""></div>
+			<div class="redBan4"><img src="" alt=""></div>
+			<div class="redBan3"><img src="" alt=""></div>
+			<div class="redBan2"><img src="" alt=""></div>
+			<div class="redBan1"><img src="" alt=""></div>			
+		</div>
+		<div class="left">
+			<div class="bluePick1"><img src="" alt=""></div>
+			<div class="bluePick2"><img src="" alt=""></div>
+			<div class="bluePick3"><img src="" alt=""></div>
+			<div class="bluePick4"><img src="" alt=""></div>
+			<div class="bluePick5"><img src="" alt=""></div>			
+		</div>
+		<div class="right">
+			<div class="redPick1"><img src="" alt=""></div>
+			<div class="redPick2"><img src="" alt=""></div>
+			<div class="redPick3"><img src="" alt=""></div>
+			<div class="redPick4"><img src="" alt=""></div>
+			<div class="redPick5"><img src="" alt=""></div>			
+		</div>
+		<div class="overflow-auto">
+			<div class="lenger">
+				<li><img src="https://game.gtimg.cn/images/lol/act/img/champion/Annie.png
+" alt="">Annie</li>
+				<li><img src="https://game.gtimg.cn/images/lol/act/img/champion/Olaf.png
+" alt="">Olaf</li>
+				<li><img src="https://game.gtimg.cn/images/lol/act/img/champion/Galio.png
+" alt="">Galio</li>
+				<li><img src="https://game.gtimg.cn/images/lol/act/img/champion/TwistedFate.png
+" alt="">TwistedFate</li>
+				<li><img src="https://game.gtimg.cn/images/lol/act/img/champion/XinZhao.png
+" alt="">XinZhao</li>
+				<li><img src="https://game.gtimg.cn/images/lol/act/img/champion/Urgot.png
+" alt="">Urgot</li>
+				<li><img src="https://game.gtimg.cn/images/lol/act/img/champion/Leblanc.png
+" alt="">Leblanc</li>
+				<li><img src="https://game.gtimg.cn/images/lol/act/img/champion/Vladimir.png
+" alt="">Vladimir</li>
+				<li><img src="https://game.gtimg.cn/images/lol/act/img/champion/FiddleSticks.png
+" alt="">FiddleSticks</li>
+				<li><img src="https://game.gtimg.cn/images/lol/act/img/champion/Kayle.png
+" alt="">Kayle</li>
+				<li><img src="https://game.gtimg.cn/images/lol/act/img/champion/MasterYi.png
+" alt="">MasterYi</li>
+				<li><img src="https://game.gtimg.cn/images/lol/act/img/champion/Alistar.png
+" alt="">Alistar</li>
+				<li><img src="https://game.gtimg.cn/images/lol/act/img/champion/Ryze.png
+" alt="">Ryze</li>
+				<li><img src="https://game.gtimg.cn/images/lol/act/img/champion/Sion.png
+" alt="">Sion</li>
+				<li><img src="https://game.gtimg.cn/images/lol/act/img/champion/Sivir.png
+" alt="">Sivir</li>
+				<li><img src="https://game.gtimg.cn/images/lol/act/img/champion/Soraka.png
+" alt="">Soraka</li>
+				<li><img src="https://game.gtimg.cn/images/lol/act/img/champion/Teemo.png
+" alt="">Teemo</li>
+				<li><img src="https://game.gtimg.cn/images/lol/act/img/champion/Tristana.png
+" alt="">Tristana</li>
+				<li><img src="https://game.gtimg.cn/images/lol/act/img/champion/Warwick.png
+" alt="">Warwick</li>
+				<li><img src="https://game.gtimg.cn/images/lol/act/img/champion/Nunu.png
+" alt="">Nunu</li>
+				<li><img src="https://game.gtimg.cn/images/lol/act/img/champion/MissFortune.png
+" alt="">MissFortune</li>
+				<li><img src="https://game.gtimg.cn/images/lol/act/img/champion/Ashe.png
+" alt="">Ashe</li>
+				<li><img src="https://game.gtimg.cn/images/lol/act/img/champion/Tryndamere.png
+" alt="">Tryndamere</li>
+				<li><img src="https://game.gtimg.cn/images/lol/act/img/champion/Jax.png
+" alt="">Jax</li>
+				<li><img src="https://game.gtimg.cn/images/lol/act/img/champion/Morgana.png
+" alt="">Morgana</li>
+				<li><img src="https://game.gtimg.cn/images/lol/act/img/champion/Zilean.png
+" alt="">Zilean</li>
+				<li><img src="https://game.gtimg.cn/images/lol/act/img/champion/Singed.png
+" alt="">Singed</li>
+				<li><img src="https://game.gtimg.cn/images/lol/act/img/champion/Evelynn.png
+" alt="">Evelynn</li>
+				<li><img src="https://game.gtimg.cn/images/lol/act/img/champion/Twitch.png
+" alt="">Twitch</li>
+				<li><img src="https://game.gtimg.cn/images/lol/act/img/champion/Karthus.png
+" alt="">Karthus</li>
+				<li><img src="https://game.gtimg.cn/images/lol/act/img/champion/Chogath.png
+" alt="">Chogath</li>
+				<li><img src="https://game.gtimg.cn/images/lol/act/img/champion/Amumu.png
+" alt="">Amumu</li>
+				<li><img src="https://game.gtimg.cn/images/lol/act/img/champion/Rammus.png
+" alt="">Rammus</li>
+				<li><img src="https://game.gtimg.cn/images/lol/act/img/champion/Anivia.png
+" alt="">Anivia</li>
+				<li><img src="https://game.gtimg.cn/images/lol/act/img/champion/Shaco.png
+" alt="">Shaco</li>
+				<li><img src="https://game.gtimg.cn/images/lol/act/img/champion/DrMundo.png
+" alt="">DrMundo</li>
+				<li><img src="https://game.gtimg.cn/images/lol/act/img/champion/Sona.png
+" alt="">Sona</li>
+				<li><img src="https://game.gtimg.cn/images/lol/act/img/champion/Kassadin.png
+" alt="">Kassadin</li>
+				<li><img src="https://game.gtimg.cn/images/lol/act/img/champion/Irelia.png
+" alt="">Irelia</li>
+				<li><img src="https://game.gtimg.cn/images/lol/act/img/champion/Janna.png
+" alt="">Janna</li>
+				<li><img src="https://game.gtimg.cn/images/lol/act/img/champion/Gangplank.png
+" alt="">Gangplank</li>
+				<li><img src="https://game.gtimg.cn/images/lol/act/img/champion/Corki.png
+" alt="">Corki</li>
+				<li><img src="https://game.gtimg.cn/images/lol/act/img/champion/Karma.png
+" alt="">Karma</li>
+				<li><img src="https://game.gtimg.cn/images/lol/act/img/champion/Taric.png
+" alt="">Taric</li>
+				<li><img src="https://game.gtimg.cn/images/lol/act/img/champion/Veigar.png
+" alt="">Veigar</li>
+				<li><img src="https://game.gtimg.cn/images/lol/act/img/champion/Trundle.png
+" alt="">Trundle</li>
+				<li><img src="https://game.gtimg.cn/images/lol/act/img/champion/Swain.png
+" alt="">Swain</li>
+				<li><img src="https://game.gtimg.cn/images/lol/act/img/champion/Caitlyn.png
+" alt="">Caitlyn</li>
+				<li><img src="https://game.gtimg.cn/images/lol/act/img/champion/Blitzcrank.png
+" alt="">Blitzcrank</li>
+				<li><img src="https://game.gtimg.cn/images/lol/act/img/champion/Malphite.png
+" alt="">Malphite</li>
+				<li><img src="https://game.gtimg.cn/images/lol/act/img/champion/Katarina.png
+" alt="">Katarina</li>
+				<li><img src="https://game.gtimg.cn/images/lol/act/img/champion/Nocturne.png
+" alt="">Nocturne</li>
+				<li><img src="https://game.gtimg.cn/images/lol/act/img/champion/Maokai.png
+" alt="">Maokai</li>
+				<li><img src="https://game.gtimg.cn/images/lol/act/img/champion/Renekton.png
+" alt="">Renekton</li>
+				<li><img src="https://game.gtimg.cn/images/lol/act/img/champion/JarvanIV.png
+" alt="">JarvanIV</li>
+				<li><img src="https://game.gtimg.cn/images/lol/act/img/champion/Elise.png
+" alt="">Elise</li>
+				<li><img src="https://game.gtimg.cn/images/lol/act/img/champion/Orianna.png
+" alt="">Orianna</li>
+				<li><img src="https://game.gtimg.cn/images/lol/act/img/champion/MonkeyKing.png
+" alt="">MonkeyKing</li>
+				<li><img src="https://game.gtimg.cn/images/lol/act/img/champion/Brand.png
+" alt="">Brand</li>
+				<li><img src="https://game.gtimg.cn/images/lol/act/img/champion/LeeSin.png
+" alt="">LeeSin</li>
+				<li><img src="https://game.gtimg.cn/images/lol/act/img/champion/Vayne.png
+" alt="">Vayne</li>
+				<li><img src="https://game.gtimg.cn/images/lol/act/img/champion/Rumble.png
+" alt="">Rumble</li>
+				<li><img src="https://game.gtimg.cn/images/lol/act/img/champion/Cassiopeia.png
+" alt="">Cassiopeia</li>
+				<li><img src="https://game.gtimg.cn/images/lol/act/img/champion/Skarner.png
+" alt="">Skarner</li>
+				<li><img src="https://game.gtimg.cn/images/lol/act/img/champion/Heimerdinger.png
+" alt="">Heimerdinger</li>
+				<li><img src="https://game.gtimg.cn/images/lol/act/img/champion/Nasus.png
+" alt="">Nasus</li>
+				<li><img src="https://game.gtimg.cn/images/lol/act/img/champion/Nidalee.png
+" alt="">Nidalee</li>
+				<li><img src="https://game.gtimg.cn/images/lol/act/img/champion/Udyr.png
+" alt="">Udyr</li>
+				<li><img src="https://game.gtimg.cn/images/lol/act/img/champion/Poppy.png
+" alt="">Poppy</li>
+				<li><img src="https://game.gtimg.cn/images/lol/act/img/champion/Gragas.png
+" alt="">Gragas</li>
+				<li><img src="https://game.gtimg.cn/images/lol/act/img/champion/Pantheon.png
+" alt="">Pantheon</li>
+				<li><img src="https://game.gtimg.cn/images/lol/act/img/champion/Ezreal.png
+" alt="">Ezreal</li>
+				<li><img src="https://game.gtimg.cn/images/lol/act/img/champion/Mordekaiser.png
+" alt="">Mordekaiser</li>
+				<li><img src="https://game.gtimg.cn/images/lol/act/img/champion/Yorick.png
+" alt="">Yorick</li>
+				<li><img src="https://game.gtimg.cn/images/lol/act/img/champion/Akali.png
+" alt="">Akali</li>
+				<li><img src="https://game.gtimg.cn/images/lol/act/img/champion/Kennen.png
+" alt="">Kennen</li>
+				<li><img src="https://game.gtimg.cn/images/lol/act/img/champion/Garen.png
+" alt="">Garen</li>
+				<li><img src="https://game.gtimg.cn/images/lol/act/img/champion/Leona.png
+" alt="">Leona</li>
+				<li><img src="https://game.gtimg.cn/images/lol/act/img/champion/Malzahar.png
+" alt="">Malzahar</li>
+				<li><img src="https://game.gtimg.cn/images/lol/act/img/champion/Talon.png
+" alt="">Talon</li>
+				<li><img src="https://game.gtimg.cn/images/lol/act/img/champion/Riven.png
+" alt="">Riven</li>
+				<li><img src="https://game.gtimg.cn/images/lol/act/img/champion/KogMaw.png
+" alt="">KogMaw</li>
+				<li><img src="https://game.gtimg.cn/images/lol/act/img/champion/Shen.png
+" alt="">Shen</li>
+				<li><img src="https://game.gtimg.cn/images/lol/act/img/champion/Lux.png
+" alt="">Lux</li>
+				<li><img src="https://game.gtimg.cn/images/lol/act/img/champion/Xerath.png
+" alt="">Xerath</li>
+				<li><img src="https://game.gtimg.cn/images/lol/act/img/champion/Shyvana.png
+" alt="">Shyvana</li>
+				<li><img src="https://game.gtimg.cn/images/lol/act/img/champion/Ahri.png
+" alt="">Ahri</li>
+				<li><img src="https://game.gtimg.cn/images/lol/act/img/champion/Graves.png
+" alt="">Graves</li>
+				<li><img src="https://game.gtimg.cn/images/lol/act/img/champion/Fizz.png
+" alt="">Fizz</li>
+				<li><img src="https://game.gtimg.cn/images/lol/act/img/champion/Volibear.png
+" alt="">Volibear</li>
+				<li><img src="https://game.gtimg.cn/images/lol/act/img/champion/Rengar.png
+" alt="">Rengar</li>
+				<li><img src="https://game.gtimg.cn/images/lol/act/img/champion/Varus.png
+" alt="">Varus</li>
+				<li><img src="https://game.gtimg.cn/images/lol/act/img/champion/Nautilus.png
+" alt="">Nautilus</li>
+				<li><img src="https://game.gtimg.cn/images/lol/act/img/champion/Viktor.png
+" alt="">Viktor</li>
+				<li><img src="https://game.gtimg.cn/images/lol/act/img/champion/Sejuani.png
+" alt="">Sejuani</li>
+				<li><img src="https://game.gtimg.cn/images/lol/act/img/champion/Fiora.png
+" alt="">Fiora</li>
+				<li><img src="https://game.gtimg.cn/images/lol/act/img/champion/Ziggs.png
+" alt="">Ziggs</li>
+				<li><img src="https://game.gtimg.cn/images/lol/act/img/champion/Lulu.png
+" alt="">Lulu</li>
+				<li><img src="https://game.gtimg.cn/images/lol/act/img/champion/Draven.png
+" alt="">Draven</li>
+				<li><img src="https://game.gtimg.cn/images/lol/act/img/champion/Hecarim.png
+" alt="">Hecarim</li>
+				<li><img src="https://game.gtimg.cn/images/lol/act/img/champion/Khazix.png
+" alt="">Khazix</li>
+				<li><img src="https://game.gtimg.cn/images/lol/act/img/champion/Darius.png
+" alt="">Darius</li>
+				<li><img src="https://game.gtimg.cn/images/lol/act/img/champion/Jayce.png
+" alt="">Jayce</li>
+				<li><img src="https://game.gtimg.cn/images/lol/act/img/champion/Lissandra.png
+" alt="">Lissandra</li>
+				<li><img src="https://game.gtimg.cn/images/lol/act/img/champion/Diana.png
+" alt="">Diana</li>
+				<li><img src="https://game.gtimg.cn/images/lol/act/img/champion/Quinn.png
+" alt="">Quinn</li>
+				<li><img src="https://game.gtimg.cn/images/lol/act/img/champion/Syndra.png
+" alt="">Syndra</li>
+				<li><img src="https://game.gtimg.cn/images/lol/act/img/champion/AurelionSol.png
+" alt="">AurelionSol</li>
+				<li><img src="https://game.gtimg.cn/images/lol/act/img/champion/Kayn.png
+" alt="">Kayn</li>
+				<li><img src="https://game.gtimg.cn/images/lol/act/img/champion/Zoe.png
+" alt="">Zoe</li>
+				<li><img src="https://game.gtimg.cn/images/lol/act/img/champion/Zyra.png
+" alt="">Zyra</li>
+				<li><img src="https://game.gtimg.cn/images/lol/act/img/champion/Kaisa.png
+" alt="">Kaisa</li>
+				<li><img src="https://game.gtimg.cn/images/lol/act/img/champion/Gnar.png
+" alt="">Gnar</li>
+				<li><img src="https://game.gtimg.cn/images/lol/act/img/champion/Zac.png
+" alt="">Zac</li>
+				<li><img src="https://game.gtimg.cn/images/lol/act/img/champion/Yasuo.png
+" alt="">Yasuo</li>
+				<li><img src="https://game.gtimg.cn/images/lol/act/img/champion/Velkoz.png
+" alt="">Velkoz</li>
+				<li><img src="https://game.gtimg.cn/images/lol/act/img/champion/Taliyah.png
+" alt="">Taliyah</li>
+				<li><img src="https://game.gtimg.cn/images/lol/act/img/champion/Camille.png
+" alt="">Camille</li>
+				<li><img src="https://game.gtimg.cn/images/lol/act/img/champion/Braum.png
+" alt="">Braum</li>
+				<li><img src="https://game.gtimg.cn/images/lol/act/img/champion/Jhin.png
+" alt="">Jhin</li>
+				<li><img src="https://game.gtimg.cn/images/lol/act/img/champion/Kindred.png
+" alt="">Kindred</li>
+				<li><img src="https://game.gtimg.cn/images/lol/act/img/champion/Jinx.png
+" alt="">Jinx</li>
+				<li><img src="https://game.gtimg.cn/images/lol/act/img/champion/TahmKench.png
+" alt="">TahmKench</li>
+				<li><img src="https://game.gtimg.cn/images/lol/act/img/champion/Senna.png
+" alt="">Senna</li>
+				<li><img src="https://game.gtimg.cn/images/lol/act/img/champion/Lucian.png
+" alt="">Lucian</li>
+				<li><img src="https://game.gtimg.cn/images/lol/act/img/champion/Zed.png
+" alt="">Zed</li>
+				<li><img src="https://game.gtimg.cn/images/lol/act/img/champion/Kled.png
+" alt="">Kled</li>
+				<li><img src="https://game.gtimg.cn/images/lol/act/img/champion/Ekko.png
+" alt="">Ekko</li>
+				<li><img src="https://game.gtimg.cn/images/lol/act/img/champion/Qiyana.png
+" alt="">Qiyana</li>
+				<li><img src="https://game.gtimg.cn/images/lol/act/img/champion/Vi.png
+" alt="">Vi</li>
+				<li><img src="https://game.gtimg.cn/images/lol/act/img/champion/Aatrox.png
+" alt="">Aatrox</li>
+				<li><img src="https://game.gtimg.cn/images/lol/act/img/champion/Nami.png
+" alt="">Nami</li>
+				<li><img src="https://game.gtimg.cn/images/lol/act/img/champion/Azir.png
+" alt="">Azir</li>
+				<li><img src="https://game.gtimg.cn/images/lol/act/img/champion/Yuumi.png
+" alt="">Yuumi</li>
+				<li><img src="https://game.gtimg.cn/images/lol/act/img/champion/Thresh.png
+" alt="">Thresh</li>
+				<li><img src="https://game.gtimg.cn/images/lol/act/img/champion/Illaoi.png
+" alt="">Illaoi</li>
+				<li><img src="https://game.gtimg.cn/images/lol/act/img/champion/RekSai.png
+" alt="">RekSai</li>
+				<li><img src="https://game.gtimg.cn/images/lol/act/img/champion/Ivern.png
+" alt="">Ivern</li>
+				<li><img src="https://game.gtimg.cn/images/lol/act/img/champion/Kalista.png
+" alt="">Kalista</li>
+				<li><img src="https://game.gtimg.cn/images/lol/act/img/champion/Bard.png
+" alt="">Bard</li>
+				<li><img src="https://game.gtimg.cn/images/lol/act/img/champion/Rakan.png
+" alt="">Rakan</li>
+				<li><img src="https://game.gtimg.cn/images/lol/act/img/champion/Xayah.png
+" alt="">Xayah</li>
+				<li><img src="https://game.gtimg.cn/images/lol/act/img/champion/Ornn.png
+" alt="">Ornn</li>
+				<li><img src="https://game.gtimg.cn/images/lol/act/img/champion/Sylas.png
+" alt="">Sylas</li>
+				<li><img src="https://game.gtimg.cn/images/lol/act/img/champion/Neeko.png
+" alt="">Neeko</li>
+				<li><img src="https://game.gtimg.cn/images/lol/act/img/champion/Aphelios.png
+" alt="">Aphelios</li>
+				<li><img src="https://game.gtimg.cn/images/lol/act/img/champion/Pyke.png
+" alt="">Pyke</li>
+				<li class="hu"><img src="https://game.gtimg.cn/images/lol/act/img/champion/Sett.png
+" alt="">Sett</li>
+
+			</div>
+		</div>
+		<button class="submit">确认</button>
+	</div>
+	<script type="text/javascript">
+		function inarray(arr, val) {
+  			var ret = false, i = 0, len = arr.length;
+  			for (; i < len; i++) {
+    			if (arr[i] === val) { // 必须用强类型校验
+      				ret = true;
+      				break;
+    				}
+  				}
+ 			 return ret;
+			}
+		var count = 0;
+		var none = "../static/images/dame.png";
+		var urlList = [];
+		urlList.push(none);
+        $(function () {
+			
+			var temp;
+			$("li").click(function (){
+					temp = this;
+					a = $(this).find("img").attr("src");
+					// if(inarray(urlList,a)){
+					// 	alert("改英雄已被ban或已被pick");
+					// }
+					// console.log(urlList);
+					// urlList.push(a);
+					
+					if (count ==0) {	
+											
+						$(".blueBan1>img").attr("src",a);
+						$(".submit").click(function (){
+							count = 1;
+							$(temp).find("img").attr("src",none);
+							})
+					}
+					else if (count ==1) {
+						$(".redBan1>img").attr("src",a);
+						$(".submit").click(function (){
+							count = 2;
+							$(temp).find("img").attr("src",none);
+							})
+
+					}
+					
+					else if (count ==2) {
+						$(".redBan2>img").attr("src",a);
+						$(".submit").click(function (){
+							count = 3;
+							$(temp).find("img").attr("src",none);
+							})
+					}
+					else if (count ==3) {
+						console.log(count)
+						$(".blueBan2>img").attr("src",a);
+						$(".submit").click(function (){
+							count = 4;
+							$(temp).find("img").attr("src",none);
+							})
+					}
+					else if (count ==4) {
+						$(".blueBan3>img").attr("src",a);
+						$(".submit").click(function (){
+							count = 5;
+							$(temp).find("img").attr("src",none);
+							})
+					}
+					else if (count ==5) {
+						$(".redBan3>img").attr("src",a);
+						$(".submit").click(function (){
+							count = 6;
+							$(temp).find("img").attr("src",none);
+							})
+					}
+					else if (count ==6) {
+						$(".bluePick1>img").attr("src",a);
+						$(".submit").click(function (){
+							count = 7;
+							$(temp).find("img").attr("src",none);
+							})
+					}
+					else if (count ==7) {
+						$(".redPick1>img").attr("src",a);
+						$(".submit").click(function (){
+							count = 8;
+							$(temp).find("img").attr("src",none);
+							})
+					}
+					else if (count ==8) {
+						$(".redPick2>img").attr("src",a);
+						$(".submit").click(function (){
+							count = 9;
+							$(temp).find("img").attr("src",none);
+							})
+					}
+					else if (count ==9) {
+						$(".bluePick2>img").attr("src",a);
+						$(".submit").click(function (){
+							count = 10;
+							$(temp).find("img").attr("src",none);
+							})
+					}
+					else if (count ==10) {
+						$(".bluePick3>img").attr("src",a);
+						$(".submit").click(function (){
+							count = 11;
+							$(temp).find("img").attr("src",none);
+							})
+					}
+					else if (count ==11) {
+						$(".redPick3>img").attr("src",a);
+						$(".submit").click(function (){
+							count = 12;
+							$(temp).find("img").attr("src",none);
+							})
+					}
+					else if (count ==12) {
+						$(".redBan4>img").attr("src",a);
+						$(".submit").click(function (){
+							count = 13;
+							$(temp).find("img").attr("src",none);
+							})
+					}
+					else if (count ==13) {
+						$(".redBan5>img").attr("src",a);
+						$(".submit").click(function (){
+							count = 14;
+							$(temp).find("img").attr("src",none);
+							})
+					}
+					else if (count ==14) {
+						$(".blueBan4>img").attr("src",a);
+						$(".submit").click(function (){
+							count = 15;
+							$(temp).find("img").attr("src",none);
+							})
+					}
+					else if (count ==15) {
+						$(".blueBan5>img").attr("src",a);
+						$(".submit").click(function (){
+							count = 16;
+							$(temp).find("img").attr("src",none);
+							})
+					}
+					else if (count ==16) {
+						$(".redPick4>img").attr("src",a);
+						$(".submit").click(function (){
+							count = 17;
+							$(temp).find("img").attr("src",none);
+							})
+					}
+					else if (count ==17) {
+						$(".bluePick4>img").attr("src",a);
+						$(".submit").click(function (){
+							count = 18;
+							$(temp).find("img").attr("src",none);
+							})
+					}
+					else if (count ==18) {
+						$(".bluePick5>img").attr("src",a);
+						$(".submit").click(function (){
+							count = 19;
+							$(temp).find("img").attr("src",none);
+							})
+					}
+					else if(count ==19){
+						$(".redPick5>img").attr("src",a);
+						$(".submit").click(function (){
+							count = 20;
+							$(temp).find("img").attr("src",none);
+							})
+					}
+					else if(count ==20){
+						alert("对局马上开始，召唤师请做好准备")
+					}
+				})
+			
+            
+			
+		})
+    </script>
+</body>
+
+</html>

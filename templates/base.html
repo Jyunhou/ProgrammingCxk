@@ -51,17 +51,19 @@
 					</a>
 					<dl class="layui-nav-child">
 						<dd><a href="javascript:">项目名称</a></dd>
+						<!-- <dd><a id="navBP" href="javascript:;" data-href="{% url 'bp' %}">智能BP</a></dd> -->
 					</dl>
 				</li>
 				<li class="layui-nav-item"><a href="">选手信息</a></li>
 				<li class="layui-nav-item"><a href="{% url 'team-list' %}">战队</a></li>
+				<li class="layui-nav-item"><a href="{% url 'bp' %}">智能BP</a></li>
 			</ul>
 		</div>
 	</div>
 
 	<div class="layui-body">
 		<!-- 内容主体区域 -->
-		<div style="padding: 15px;">
+		<div style="padding: 15px;" id="Content">
 			{% block body %}{% endblock %}
 		</div>
 	</div>
@@ -91,6 +93,11 @@
 					$("#user .layui-nav-more").before(tip);
 				}
 			},
+		});
+		
+		$("#navBP").click(function () {
+			var url = $(this).data('href');
+			$('#Content').load(url);
 		});
 	});
 </script>
