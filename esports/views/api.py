@@ -382,7 +382,7 @@ class Message:
                 'type': 1,
             })
 
-        return json_success(data)
+        return json_list(data)
 
     @staticmethod
     def read(request):

@@ -26,26 +26,47 @@
 			var $ = layui.$;
 
 			// 加载消息列表
-			get({
-				url: "{% url 'api-msg-list' %}",
-				data: {limit: 16},
-				success: result => {
-					let msgLast = $("#msg-list");
-					for (let msg of result.data) {
-						title = `${msg.title} - ${msg.datetime}`;
-						if (!msg.isRead) {
-							title += "&nbsp;&nbsp;<span class=\"layui-badge-dot\">";
+			function loadMsgList(page) {
+				limit = 16;
+				get({
+					url: "{% url 'api-msg-list' %}",
+					data: {
+						limit: limit,
+						page: page,
+					},
+					success: result => {
+						let msgList = $("#msg-list");
+						msgList.empty();
+						for (let msg of result.data) {
+							title = `${msg.title} - ${msg.datetime}`;
+							if (!msg.isRead) {
+								title += "&nbsp;&nbsp;<span class=\"layui-badge-dot\">";
+							}
+							html = $("#msg-template")[0].innerHTML
+								.replace("%id%", msg.id)
+								.replace("%title%", title)
+								.replace("%content%", msg.content);
+							html = html.replace("%show%", msg.id.toString() === getParam("id") ? " layui-show" : "");
+							msgList.append(html);
 						}
-						html = $("#msg-template")[0].innerHTML
-							.replace("%id%", msg.id)
-							.replace("%title%", title)
-							.replace("%content%", msg.content);
-						html = html.replace("%show%", msg.id.toString() === getParam("id") ? " layui-show" : "");
-						msgLast.append(html);
-					}
-					element.render("collapse", "msg-list");
-				},
-			});
+						element.render("collapse", "msg-list");
+						laypage.render({
+							elem: "page",
+							count: 5,
+							curr: page,
+							layout: ["count", "prev", "page", "next", "refresh", "skip"],
+							limit: limit,
+							jump: function (obj, first) {
+								if (!first) {
+									loadMsgList(obj.curr);
+								}
+							}
+						});
+					},
+				});
+			}
+
+			loadMsgList(1);
 
 			//监听折叠
 			element.on("collapse(msg-list)", function (data) {
@@ -54,15 +75,6 @@
 					titleHTML = data.title[0].innerHTML;
 					titleHTML = titleHTML.replace("<span class=\"layui-badge-dot\"></span>", "");
 					data.title[0].innerHTML = titleHTML;
-				}
-			});
-
-			laypage.render({
-				elem: "page",
-				count: 16,
-				layout: ['count', 'prev', 'page', 'next', 'limit', 'refresh', 'skip'],
-				jump: function (obj) {
-					console.log(obj)// TODO 分页
 				}
 			});
 
