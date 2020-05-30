@@ -18,6 +18,7 @@ def manager_required(func):
 def index(request):
     return render(request, 'base.html')
 
+
 def bp(request):
     return render(request, 'bp.html')
 
@@ -56,10 +57,12 @@ class Team:
         if not team:
             raise Http404()
 
-        in_app: bool = TeamApplication.objects.filter(
-            user=request.user, team=team,
-            status=TeamApplication.STATUS_PENDING
-        ).exists()
+        in_app: bool = False
+        if request.user.is_authenticated:
+            in_app = TeamApplication.objects.filter(
+                user=request.user, team=team,
+                status=TeamApplication.STATUS_PENDING
+            ).exists()
 
         return render(request, 'team/detail.html', {
             'team': team,
