@@ -212,6 +212,23 @@ class Team:
         return json_list(team_list)
 
     @staticmethod
+    def member_list(request, team_id: int):
+        limit: int = int(request.GET.get('limit'))
+
+        team: TeamModel = TeamModel.objects.filter(id=team_id).first()
+
+        member_list = []
+        paged = api_paging(request, team.person_set.all(), limit)
+        for member in paged['list']:
+            member_list.append({
+                'id': member.id,
+                'name': member.name,
+                'gender': '男' if member.gender else '女',
+            })
+
+        return json_list(member_list)
+
+    @staticmethod
     def join(request):
         user_id: str = request.POST.get('userId')
         team_id: str = request.POST.get('teamId')
@@ -242,6 +259,21 @@ class Team:
             '%s申请加入您的战队“%s”：<br>%s%s' % (user.person.name, team.name, desc, button_html),
             None, team.manager,
         )
+
+        return json_success({})
+
+    @staticmethod
+    @manager_required
+    def remove_member(request):
+        member_id: str = request.POST.get('memberId')
+
+        member: Person = Person.objects.filter(id=member_id).first()
+        team: TeamModel = member.team
+
+        member.team = None
+        member.save()
+
+        generate_message("战队成员变动", "你已被移除出战队“%s”。" % team.name, None, member.user)
 
         return json_success({})
 

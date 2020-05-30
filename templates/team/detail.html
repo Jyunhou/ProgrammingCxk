@@ -14,7 +14,11 @@
 				</button>
 			{% endif %}
 		</blockquote>
-		<div style="padding: 20px 0;">
+
+		<fieldset class="layui-elem-field layui-field-title">
+			<legend>战队概括</legend>
+		</fieldset>
+		<div>
 			<img src="/static/images/default-team-avatar.png" alt="头像" id="avatar-image"
 				 style="width:128px;height:128px;border-radius:2px;">
 			{{ team.desc }}
@@ -25,6 +29,18 @@
 		<div class="layui-form-item">
 			教练：{% if team.coach %}{{ team.coach.person.name }}{% else %}暂无{% endif %}
 		</div>
+
+		<fieldset class="layui-elem-field layui-field-title">
+			<legend>成员列表</legend>
+		</fieldset>
+		<table class="layui-hide" id="list"></table>
+		<script type="text/html" id="barList">
+			<a class="layui-btn layui-btn-xs" lay-event="detail">查看</a>
+			{% if team.manager == request.user %}
+				<a class="layui-btn layui-btn-xs layui-btn-danger" lay-event="remove">移除</a>
+			{% endif %}
+		</script>
+
 		{% if request.user.person.type == 1 and request.user.person.team is None %}
 			{% if in_app %}
 				加入申请审批中
@@ -46,9 +62,11 @@
 
 {% block script %}
 	<script>
-		layui.use(["form"], function () {
+		layui.use(["form", "table"], function () {
 			var form = layui.form;
+			var table = layui.table;
 
+			// 加入战队按钮
 			form.on("submit(join)", function (data) {
 				if (isSubmitting()) {
 					return false;
@@ -84,6 +102,7 @@
 				return false;
 			});
 
+			// 退出按钮
 			form.on("submit(exit)", function (data) {
 				if (isSubmitting()) {
 					return false;
@@ -109,6 +128,50 @@
 					});
 				});
 				return false;
+			});
+
+			// 成员列表
+			function renderTable(table) {
+				table.render({
+					elem: "#list",
+					height: "full",
+					width: "default",
+					url: "{% url 'api-team-member-list' team.id %}",
+					page: true,
+					limit: 16,
+					limits: [16, 32, 64, 128],
+					cols: [[
+						{field: "name", title: "名称", width: 476},
+						{field: "gender", title: "性别", width: 164},
+						{fixed: "right", title: "操作", width: 164, align: "center", toolbar: "#barList"},
+					]],
+				});
+			}
+
+			renderTable(table);
+
+			table.on("tool", function (obj) {
+				var layEvent = obj.event;
+				if (layEvent === "detail") {
+					window.location.href = "/team/member/detail/" + obj.data.id + "/";
+				} else if (layEvent === "remove") {
+					layer.confirm(`确认移除成员${obj.data.name}？该操作不可撤销！`, function (index) {
+						layer.close(index);
+						postAndTip({
+							url: "{% url 'api-team-remove' %}",
+							data: {
+								memberId: obj.data.id,
+								teamId: {{ team.id }}
+							},
+							csrfToken: "{{ csrf_token }}",
+							actionName: "移除",
+							success: function (result) {
+								obj.del();
+							},
+							showSuccessTip: true,
+						});
+					});
+				}
 			});
 		});
 	</script>

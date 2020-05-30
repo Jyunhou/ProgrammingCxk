@@ -39,6 +39,7 @@ urlpatterns = [
     path('team/change/<int:team_id>/', TeamPage.change, name='team-change'),
     path('team/list/', TeamPage.list, name='team-list'),
     path('team/app/<int:app_id>/', TeamPage.app, name='team-app'),
+    path('team/member/detail/<int:person_id>/', TeamPage.member_detail, name='team-member'),
     # 消息
     path('msg/list/', MsgPage.list, name='msg-list'),
     # api
@@ -52,7 +53,9 @@ urlpatterns = [
     path('api/team/change/', TeamApi.change, name='api-team-change'),
     path('api/team/disband/', TeamApi.disband, name='api-team-disband'),
     path('api/team/list/', TeamApi.list, name='api-team-list'),
+    path('api/team/member/list/<int:team_id>/', TeamApi.member_list, name='api-team-member-list'),
     path('api/team/join/', TeamApi.join, name='api-team-join'),
+    path('api/team/remove/', TeamApi.remove_member, name='api-team-remove'),
     path('api/team/app/', TeamApi.application, name='api-team-app'),
     path('api/team/exit/', TeamApi.exit, name='api-team-exit'),
     # 教练

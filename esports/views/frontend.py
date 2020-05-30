@@ -95,6 +95,10 @@ class Team:
             'app': app,
         })
 
+    @staticmethod
+    def member_detail(request, person_id: int):
+        pass
+
 
 class Message:
     @staticmethod
