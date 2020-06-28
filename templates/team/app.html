@@ -27,24 +27,28 @@
 							<textarea name="desc" class="layui-textarea" readonly>{{ app.desc }}</textarea>
 						</div>
 					</div>
-					{# TODO 这里应该有一些战绩显示 #}
 				</form>
 			</div>
 		</div>
-		{% if app.status == 0 %}
-			<button id="btn-accept" class="btn-submit layui-btn layui-btn-normal">
-				同意
-				<i class="layui-icon layui-icon-loading layui-anim layui-anim-rotate layui-anim-loop layui-hide"></i>
-			</button>
-			<button id="btn-refuse" class="btn-submit layui-btn layui-btn-danger">
-				拒绝
-				<i class="layui-icon layui-icon-loading layui-anim layui-anim-rotate layui-anim-loop layui-hide"></i>
-			</button>
-		{% elif app.status == 1 %}
-			已同意
-		{% elif app.status == 2 %}
-			已拒绝
-		{% endif %}
+		<button id="btn-info" class="layui-btn">
+			选手信息
+		</button>
+		<div style="margin:10px 0">
+			{% if app.status == 0 %}
+				<button id="btn-accept" class="btn-submit layui-btn layui-btn-normal">
+					同意
+					<i class="layui-icon layui-icon-loading layui-anim layui-anim-rotate layui-anim-loop layui-hide"></i>
+				</button>
+				<button id="btn-refuse" class="btn-submit layui-btn layui-btn-danger">
+					拒绝
+					<i class="layui-icon layui-icon-loading layui-anim layui-anim-rotate layui-anim-loop layui-hide"></i>
+				</button>
+			{% elif app.status == 1 %}
+				已同意
+			{% elif app.status == 2 %}
+				已拒绝
+			{% endif %}
+		</div>
 	</div>
 {% endblock %}
 
@@ -54,6 +58,9 @@
 			var $ = layui.$;
 			var layer = layui.layer;
 
+			$("#btn-info").on("click", function () {
+				window.location = "{% url 'player-detail' app.user.person.id %}";
+			});
 			$("#btn-accept").on("click", function () {
 				layer.confirm("确定同意申请吗？", function (index) {
 					layer.close(index);

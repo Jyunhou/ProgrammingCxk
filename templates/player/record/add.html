@@ -1,0 +1,129 @@
+{% extends 'base.html' %}
+
+{% block title %}添加战绩{% endblock %}
+
+{% block body %}
+	<div class="layui-form layui-tab-content" style="padding: 20px 15px;">
+		<div class="layui-tab-item layui-show">
+			<div class="layui-form layui-form-pane">
+				<form method="post">
+					{% csrf_token %}
+					<div class="layui-form-item">
+						<label class="layui-form-label">胜负</label>
+						<div class="layui-input-block">
+							<input type="checkbox" checked id="win" name="win" lay-skin="switch"
+								   lay-text="胜利|失败">
+						</div>
+					</div>
+					<div class="layui-form-item">
+						<label for="kill" class="layui-form-label">击杀</label>
+						<div class="layui-input-inline">
+							<input type="text" id="kill" name="kill"
+								   required autocomplete="off" lay-verify="required|number"
+								   class="layui-input">
+						</div>
+					</div>
+					<div class="layui-form-item">
+						<label for="assist" class="layui-form-label">助攻</label>
+						<div class="layui-input-inline">
+							<input type="text" id="assist" name="assist"
+								   required autocomplete="off" lay-verify="required|number"
+								   class="layui-input">
+						</div>
+					</div>
+					<div class="layui-form-item">
+						<label for="death" class="layui-form-label">死亡</label>
+						<div class="layui-input-inline">
+							<input type="text" id="death" name="death"
+								   required autocomplete="off" lay-verify="required|number"
+								   class="layui-input">
+						</div>
+					</div>
+					<div class="layui-form-item">
+						<label for="reinforce" class="layui-form-label">补兵</label>
+						<div class="layui-input-inline">
+							<input type="text" id="reinforce" name="reinforce"
+								   required autocomplete="off" lay-verify="required|number"
+								   class="layui-input">
+						</div>
+					</div>
+					<div class="layui-form-item">
+						<label for="money" class="layui-form-label">金钱</label>
+						<div class="layui-input-inline">
+							<input type="text" id="money" name="money"
+								   required autocomplete="off" lay-verify="required|number"
+								   class="layui-input">
+						</div>
+					</div>
+					<div class="layui-form-item">
+						<label for="tower" class="layui-form-label">推塔</label>
+						<div class="layui-input-inline">
+							<input type="text" id="tower" name="tower"
+								   required autocomplete="off" lay-verify="required|number"
+								   class="layui-input">
+						</div>
+					</div>
+					<div class="layui-form-item">
+						<label class="layui-form-label">类型</label>
+						<div class="layui-input-inline">
+							<select name="type">
+								<option value="1" selected>排位赛</option>
+								<option value="2">匹配赛</option>
+								<option value="3">大乱斗</option>
+							</select>
+						</div>
+					</div>
+					<div class="layui-form-item">
+						<label class="layui-form-label">日期</label>
+						<div class="layui-input-inline">
+							<input type="text" name="date" id="date" autocomplete="off" class="layui-input">
+						</div>
+					</div>
+
+					<div class="layui-form-item">
+						<button id="btn-create" class="btn-submit layui-btn" lay-filter="create" lay-submit>
+							添加
+							<i class="layui-icon layui-icon-loading layui-anim layui-anim-rotate layui-anim-loop layui-hide"></i>
+						</button>
+					</div>
+				</form>
+			</div>
+		</div>
+	</div>
+{% endblock %}
+
+{% block script %}
+	<script>
+		layui.use(["form", "laydate"], function () {
+			var form = layui.form;
+			var laydate = layui.laydate;
+
+			laydate.render({
+				elem: '#date'
+			});
+
+			form.on('submit(create)', function (data) {
+				if (layui.$("#btn-create").hasClass("layui-btn-disabled")) {
+					return false;
+				}
+				submitting();
+				postAndTip({
+					url: "{% url 'api-player-record-add' player.id %}",
+					data: layui.$("form").serialize(),
+					csrfToken: "{{ csrf_token }}",
+					actionName: "创建",
+					success: function (result) {
+						setTimeout(function () {
+							window.location.href = "{% url 'player-record-list' player.id %}";
+						}, 1000);
+					},
+					fail: function (result) {
+						submitFailed();
+					},
+					showSuccessTip: true,
+				});
+				return false;
+			});
+		});
+	</script>
+{% endblock %}

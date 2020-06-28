@@ -1,0 +1,170 @@
+{% extends 'base.html' %}
+
+{% block title %}编辑战队{% endblock %}
+
+{% block body %}
+	<div class="layui-form layui-tab-content" style="padding: 20px 15px;">
+		<blockquote class="layui-elem-quote">
+			在此修改{{ team.name }}的各项信息
+		</blockquote>
+		<div class="layui-tab-item layui-show">
+			<div class="layui-form layui-form-pane">
+				<form method="post">
+					{% csrf_token %}
+					<input type="hidden" name="id" value="{{ team.id }}">
+					<div class="layui-form-item">
+						<label for="teamname" class="layui-form-label">名称</label>
+						<div class="layui-input-inline">
+							<input type="text" id="teamname" name="teamname" value="{{ team.name }}"
+								   required autocomplete="off" lay-verify="required"
+								   class="layui-input">
+						</div>
+					</div>
+					<div class="layui-form-item layui-form-text">
+						<label class="layui-form-label">简介</label>
+						<div class="layui-input-block">
+							<textarea placeholder="请输入战队简介" name="desc"
+									  class="layui-textarea">{{ team.desc }}</textarea>
+						</div>
+					</div>
+
+					<blockquote class="layui-elem-quote">
+						头像仅支持外部图像链接
+					</blockquote>
+					<div class="layui-form-item">
+						<label for="avatar" class="layui-form-label">头像</label>
+						<div class="layui-input-block">
+							<input type="text" id="avatar" name="avatar" value="{{ team.avatar }}"
+								   autocomplete="off"
+								   class="layui-input">
+						</div>
+					</div>
+					<div class="layui-form-item">
+						<img src="{{ team.avatar }}" alt="头像" id="avatar-image"
+							 style="width:128px;height:128px;border-radius:2px;">
+						<button class="layui-btn" lay-filter="update-avatar" lay-submit>刷新头像</button>
+					</div>
+
+					<div class="layui-form-item">
+						<label class="layui-form-label">教练</label>
+						<div class="layui-input-inline">
+							<input type="text" disabled class="layui-input" id="coach-name"
+								   value="{% if team.coach %}{{ team.coach.person.name }}{% else %}暂无{% endif %}">
+							<input type="hidden" name="coach" id="coach-id"
+								   value="{% if team.coach %}{{ team.coach.id }}{% else %}{% endif %}">
+						</div>
+						<button class="layui-btn" lay-filter="chose-coach" lay-submit>选择教练</button>
+						<button class="layui-btn" lay-filter="remove-coach" lay-submit>移除教练</button>
+					</div>
+
+					<div class="layui-form-item">
+						<button id="btn-change" class="btn-submit layui-btn" lay-filter="change" lay-submit>
+							保存
+							<i class="layui-icon layui-icon-loading layui-anim layui-anim-rotate layui-anim-loop layui-hide"></i>
+						</button>
+					</div>
+					<hr class="layui-bg-red">
+					<div class="layui-form-item">
+						<button id="btn-disband" class="btn-submit layui-btn layui-btn-danger" lay-filter="disband"
+								lay-submit>
+							解散战队
+							<i class="layui-icon layui-icon-loading layui-anim layui-anim-rotate layui-anim-loop layui-hide"></i>
+						</button>
+					</div>
+				</form>
+			</div>
+		</div>
+	</div>
+{% endblock %}
+
+{% block script %}
+	<script>
+		layui.use(["form", "layer"], function () {
+			var form = layui.form;
+			var layer = layui.layer;
+
+			form.on("submit(change)", function (data) {
+				if (layui.$("#btn-change").hasClass("layui-btn-disabled")) {
+					return false;
+				}
+				submitting();
+				postAndTip({
+					url: "{% url 'api-team-change' %}",
+					data: layui.$("form").serialize(),
+					csrfToken: "{{ csrf_token }}",
+					actionName: "保存",
+					success: function (result) {
+						setTimeout(function () {
+							window.location.reload();
+						}, 1000);
+					},
+					fail: function (result) {
+						submitFailed();
+					},
+					showSuccessTip: true,
+				});
+				return false;
+			});
+
+			form.on("submit(disband)", function (data) {
+				if (isSubmitting()) {
+					return false;
+				}
+				layer.confirm("确定解散战队吗？操作无法撤销！", function (index) {
+					layer.close(index);
+					submitting();
+					postAndTip({
+						url: "{% url 'api-team-disband' %}",
+						data: {id: '{{ team.id }}'},
+						csrfToken: "{{ csrf_token }}",
+						actionName: "解散",
+						success: function (result) {
+							setTimeout(function () {
+								window.location.href = '{% url 'team-list'%}';
+							}, 1000);
+						},
+						fail: function (result) {
+							submitFailed();
+						},
+						showSuccessTip: true,
+					});
+				});
+				return false;
+			});
+
+			form.on("submit(update-avatar)", function (data) {
+				layui.$("#avatar-image")[0].src = layui.$("#avatar")[0].value;
+				return false;
+			});
+
+			form.on("submit(chose-coach)", function (data) {
+				layer.prompt({
+					title: "请输入教练的用户名"
+				}, function (value, index, elem) {
+					postAndTip({
+						url: "{% url 'api-coach-chose' %}",
+						data: {id: value},
+						csrfToken: "{{ csrf_token }}",
+						actionName: "选择",
+						success: function (result) {
+							layer.close(index);
+							document.querySelector("#coach-name").value = result.data.coachName;
+							document.querySelector("#coach-id").value = result.data.coachId;
+						},
+						fail: function (result) {
+						},
+						showSuccessTip: false,
+					});
+				});
+				return false;
+			});
+
+			form.on("submit(remove-coach)", function (data) {
+				document.querySelector("#coach-name").value = "暂无";
+				document.querySelector("#coach-id").value = "";
+				layer.msg("教练已移除");
+				return false;
+			});
+		});
+	</script>
+{% endblock %}

@@ -1,0 +1,151 @@
+{% extends 'base.html' %}
+
+{% block title %}选手信息{% endblock %}
+
+{% block head %}
+	<style>
+		.layui-progress-big .layui-progress-bar, .layui-progress-big {
+			height: 38px;
+		}
+
+		.left-half {
+			width: 50%;
+			float: left;
+		}
+
+		.right-half {
+			width: 50%;
+			float: right;
+		}
+
+		.layui-timeline {
+			margin-top: 19.89px;
+		}
+
+		.result {
+			font-size: 16px;
+		}
+
+		.win {
+			color: #5FB878;
+		}
+
+		.fail {
+			color: red;
+		}
+
+		.avatar {
+			width: 96px;
+			height: 96px;
+		}
+
+		.info {
+			margin: 0 0 26px 112px;
+			font-size: 32px;
+			font-weight: bold;
+		}
+	</style>
+{% endblock %}
+
+{% block body %}
+	<div class="layui-form layui-tab-content" id="LAY_ucm" style="padding: 20px 15px;">
+		<div class="left-half">
+			<div class="left-half">
+				<p style="font-weight: bold">
+					胜场数
+				</p>
+				<p style="font-weight: bold; font-size: 48px; color: red;">
+					{{ data.win }}
+				</p>
+			</div>
+			<div class="right-half">
+				<p style="font-weight: bold">
+					胜率
+				</p>
+				<p style="font-weight: bold; font-size: 48px; color: #5FB878;">
+					{{ data.win_rate }}%
+				</p>
+			</div>
+			{% if can_manage_info %}
+				<button onclick="window.location='{% url 'player-record-list' player.id %}'" class="layui-btn">
+					管理战绩
+				</button>
+			{% endif %}
+			<ul class="layui-timeline">
+				{% for item in data.persondatarecord_set.all %}
+					<li class="layui-timeline-item">
+						<i class="layui-icon layui-timeline-axis"></i>
+						<div class="layui-timeline-content layui-text">
+							<h3 class="layui-timeline-title">{{ item.date }}</h3>
+							<div>
+								<div>
+								<span>
+									<span class="result {% if item.win %}win{% else %}fail{% endif %}">
+										{% if item.win %}胜利{% else %}失败{% endif %}
+									</span>
+									<span>{{ item.kill }}/{{ item.assist }}/{{ item.death }}</span>
+								</span>
+									<p>{{ item.get_type_display }}</p>
+								</div>
+							</div>
+						</div>
+					</li>
+				{% endfor %}
+			</ul>
+		</div>
+		<div class="right-half">
+			<div class="info">
+				<img src="{{ player.avatar }}" alt="avatar" class="avatar">
+				{{ player.name }}
+			</div>
+			<div class="layui-form-item">
+				<label class="layui-form-label">击杀</label>
+				<div class="layui-input-inline">
+					<div class="layui-progress layui-progress-big">
+						<div class="layui-progress-bar" lay-percent="{{ data.kill }}%"></div>
+					</div>
+				</div>
+			</div>
+			<div class="layui-form-item">
+				<label class="layui-form-label">助攻</label>
+				<div class="layui-input-inline">
+					<div class="layui-progress layui-progress-big">
+						<div class="layui-progress-bar" lay-percent="{{ data.assist }}%"></div>
+					</div>
+				</div>
+			</div>
+			<div class="layui-form-item">
+				<label class="layui-form-label">死亡</label>
+				<div class="layui-input-inline">
+					<div class="layui-progress layui-progress-big">
+						<div class="layui-progress-bar" lay-percent="{{ data.death }}%"></div>
+					</div>
+				</div>
+			</div>
+			<div class="layui-form-item">
+				<label class="layui-form-label">补兵</label>
+				<div class="layui-input-inline">
+					<div class="layui-progress layui-progress-big">
+						<div class="layui-progress-bar" lay-percent="{{ data.reinforce }}%"></div>
+					</div>
+				</div>
+			</div>
+			<div class="layui-form-item">
+				<label class="layui-form-label">金钱</label>
+				<div class="layui-input-inline">
+					<div class="layui-progress layui-progress-big">
+						<div class="layui-progress-bar" lay-percent="{{ data.money }}%"></div>
+					</div>
+				</div>
+			</div>
+			<div class="layui-form-item">
+				<label class="layui-form-label">推塔</label>
+				<div class="layui-input-inline">
+					<div class="layui-progress layui-progress-big">
+						<div class="layui-progress-bar" lay-percent="{{ data.tower }}%"></div>
+					</div>
+				</div>
+			</div>
+		</div>
+	</div>
+{% endblock %}

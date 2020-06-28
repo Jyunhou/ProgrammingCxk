@@ -28,8 +28,43 @@ class Person(models.Model):
     email = models.EmailField(unique=True)
     type = models.SmallIntegerField(choices=PERSON_TYPE_CHOICES)
     avatar = models.URLField(max_length=255, default='/static/images/default-person-avatar.png')
-    data = models.TextField()
     team = models.ForeignKey(Team, models.SET_NULL, null=True)
+
+
+class PersonData(models.Model):
+    person = models.OneToOneField(Person, models.CASCADE, primary_key=True)
+    win = models.IntegerField(default=0)
+    win_rate = models.IntegerField(default=0)
+    kill = models.IntegerField(default=0)
+    assist = models.IntegerField(default=0)
+    death = models.IntegerField(default=0)
+    reinforce = models.IntegerField(default=0)
+    money = models.IntegerField(default=0)
+    tower = models.IntegerField(default=0)
+
+
+class PersonDataRecord(models.Model):
+    TYPE_QUALIFYING = 1
+    TYPE_MATCH = 2
+    TYPE_BIG_FIGHT = 3
+    TYPE_CHOICES = (
+        (TYPE_QUALIFYING, '排位赛'),
+        (TYPE_MATCH, '匹配赛'),
+        (TYPE_BIG_FIGHT, '大乱斗'),
+    )
+    data = models.ForeignKey(PersonData, models.CASCADE)
+    win = models.BooleanField()
+    kill = models.IntegerField()
+    assist = models.IntegerField()
+    death = models.IntegerField()
+    reinforce = models.IntegerField()
+    money = models.IntegerField()
+    tower = models.IntegerField()
+    type = models.IntegerField(choices=TYPE_CHOICES)
+    date = models.DateField()
+
+    class Meta:
+        ordering = ['-date']
 
 
 class Message:

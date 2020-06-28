@@ -22,6 +22,11 @@
 						<span class="layui-nav-more"></span>
 					</a>
 					<dl class="layui-nav-child layui-anim layui-anim-upbit">
+						{% if request.user.person.type == 1 %}
+							<dd>
+								<a href="{% url 'player-detail' request.user.person.id %}">比赛信息</a>
+							</dd>
+						{% endif %}
 						<dd>
 							<a href="{% url 'user-detail' %}">用户设置</a>
 						</dd>
@@ -45,16 +50,8 @@
 		<div class="layui-side-scroll">
 			<!-- 左侧导航区域 -->
 			<ul class="layui-nav layui-nav-tree">
-				<li class="layui-nav-item layui-nav-itemed">
-					<a class="" href="javascript:">
-						比赛数据
-						<span class="layui-nav-more"></span>
-					</a>
-					<dl class="layui-nav-child">
-						<dd><a href="javascript:">项目名称</a></dd>
-					</dl>
-				</li>
-				<li class="layui-nav-item"><a href="">选手信息</a></li>
+				{#<li class="layui-nav-item"><a href="javascript:">近期比赛</a></li>#}
+				<li class="layui-nav-item"><a href="{% url 'player-list' %}">选手</a></li>
 				<li class="layui-nav-item"><a href="{% url 'team-list' %}">战队</a></li>
 				<li class="layui-nav-item"><a href="{% url 'bp' %}">智能BP</a></li>
 			</ul>

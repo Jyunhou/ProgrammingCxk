@@ -1,0 +1,54 @@
+{% extends 'base.html' %}
+
+{% block title %}战绩列表{% endblock %}
+
+{% block body %}
+	<div style="padding: 20px 15px">
+		<button type="button" class="layui-btn" onclick="window.location.href='{% url 'player-record-add' player.id %}'">添加战绩</button>
+
+		<table class="layui-hide" id="list"></table>
+	</div>
+{% endblock %}
+
+{% block script %}
+	<script>
+		layui.use(["table"], function () {
+			var table = layui.table;
+			element = layui.element;
+
+			function renderTable(table) {
+				table.render({
+					elem: "#list",
+					height: "full",
+					width: "default",
+					url: "{% url 'api-player-record-list' player.id %}", //数据接口
+					page: true,
+					limit: 16,
+					limits: [16, 32, 64, 128],
+					cols: [[
+						{field: "date", title: "日期", width: 150},
+						{field: "win", title: "胜利", width: 86},
+						{field: "kill", title: "击杀", width: 86},
+						{field: "assist", title: "助攻", width: 86},
+						{field: "death", title: "死亡", width: 86},
+						{field: "death", title: "补兵", width: 86},
+						{field: "death", title: "金钱", width: 86},
+						{field: "death", title: "推塔", width: 86},
+						{field: "type", title: "类型", width: 86},
+					]],
+				});
+			}
+
+			//执行一个 table 实例
+			renderTable(table);
+
+			//监听行工具事件
+			table.on("tool", function (obj) { //注：tool 是工具条事件名，test 是 table 原始容器的属性 lay-filter="对应的值"
+				var layEvent = obj.event; //获得 lay-event 对应的值
+				if (layEvent === "detail") {
+					window.location.href = "/player/detail/" + obj.data.id + "/";
+				}
+			});
+		});
+	</script>
+{% endblock %}

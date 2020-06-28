@@ -19,9 +19,11 @@ from django.urls import path
 from esports.views import api
 from esports.views import frontend
 from esports.views.api import Auth as AuthApi
+from esports.views.api import Player as PlayerApi
 from esports.views.api import Team as TeamApi
 from esports.views.api import User as UserApi
 from esports.views.frontend import Message as MsgPage
+from esports.views.frontend import Player as PlayerPage
 from esports.views.frontend import Team as TeamPage
 from esports.views.frontend import User as UserPage
 
@@ -33,13 +35,18 @@ urlpatterns = [
     path('register/', frontend.register, name='register'),
     # 用户
     path('user/', UserPage.detail, name='user-detail'),
+    # 选手
+    path('player/detail/<int:person_id>/', PlayerPage.detail, name='player-detail'),
+    path('player/list/', PlayerPage.list, name='player-list'),
+    path('player/record/list/<int:player_id>/', PlayerPage.record_list, name='player-record-list'),
+    path('player/record/add/<int:player_id>/', PlayerPage.add_record, name='player-record-add'),
+    path('player/record/change/<int:record_id>/', PlayerPage.change_record, name='player-record-change'),
     # 战队
     path('team/add/', TeamPage.add, name='team-add'),
     path('team/detail/<int:team_id>/', TeamPage.detail, name='team-detail'),
     path('team/change/<int:team_id>/', TeamPage.change, name='team-change'),
     path('team/list/', TeamPage.list, name='team-list'),
     path('team/app/<int:app_id>/', TeamPage.app, name='team-app'),
-    path('team/member/detail/<int:person_id>/', TeamPage.member_detail, name='team-member'),
     # 消息
     path('msg/list/', MsgPage.list, name='msg-list'),
     # api
@@ -48,6 +55,11 @@ urlpatterns = [
     path('api/logout/', AuthApi.logout, name='api-logout'),
     path('api/register/', AuthApi.register, name='api-register'),
     path('api/user/change/', UserApi.change, name='api-user-change'),
+    # 选手
+    path('api/player/list/', PlayerApi.list, name='api-player-list'),
+    path('api/player/info/list/<int:player_id>/', PlayerApi.record_list, name='api-player-record-list'),
+    path('api/player/add/<int:player_id>/', PlayerApi.add_record, name='api-player-record-add'),
+    path('api/player/change/<int:record_id>/', PlayerApi.change_record, name='api-player-record-change'),
     # 战队
     path('api/team/add/', TeamApi.add, name='api-team-add'),
     path('api/team/change/', TeamApi.change, name='api-team-change'),

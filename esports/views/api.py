@@ -1,11 +1,14 @@
+from datetime import date
+
 from django.contrib import auth
 from django.contrib.auth.models import User as DjangoUser
 from django.core.exceptions import PermissionDenied
 from django.urls import reverse
 
-from esports.models import Message as MsgStatus
-from esports.models import Person, TeamApplication, ReceiveMessage, SendMessage
+from esports.models import Message as MsgStatus, PersonDataRecord, PersonData
+from esports.models import Person as PersonModel
 from esports.models import Team as TeamModel
+from esports.models import TeamApplication, ReceiveMessage, SendMessage
 from esports.views.frontend import manager_required
 from utils.tools import json_success, json_failed, json_list, api_paging
 
@@ -50,10 +53,10 @@ class User:
         user.person.avatar = avatar
         user.person.name = nickname
         user.person.gender = gender
-        if Person.objects.filter(phone=phone).exclude(id=user.person.id).exists():
+        if PersonModel.objects.filter(phone=phone).exclude(id=user.person.id).exists():
             return json_failed(4, '电话号码已被使用')
         user.person.phone = phone
-        if Person.objects.filter(email=email).exclude(id=user.person.id).exists():
+        if PersonModel.objects.filter(email=email).exclude(id=user.person.id).exists():
             return json_failed(4, '电子邮箱已被使用')
         user.person.email = email
         if password != '' or repass != '':
@@ -106,10 +109,10 @@ class Auth:
         if DjangoUser.objects.filter(username=username).exists():
             return json_failed(1, '用户名已存在')
 
-        if Person.objects.filter(phone=phone).exists():
+        if PersonModel.objects.filter(phone=phone).exists():
             return json_failed(4, '电话号码已被使用')
 
-        if Person.objects.filter(email=email).exists():
+        if PersonModel.objects.filter(email=email).exists():
             return json_failed(4, '电子邮箱已被使用')
 
         else:
@@ -118,15 +121,15 @@ class Auth:
                 password=password,
             )
             user.save()
-            person: Person = Person.objects.create(
+            person: PersonModel = PersonModel.objects.create(
                 user=user,
                 name=nickname,
                 gender=gender,
                 phone=phone,
                 email=email,
                 type=type_,
-                data='{}',
             )
+            person.data = PersonData.objects.create(person=person)
             person.save()
             auth.login(request, user)
             return json_success({})
@@ -199,7 +202,7 @@ class Team:
 
     @staticmethod
     def list(request):
-        teams: TeamModel = TeamModel.objects.select_related('manager', 'coach')
+        teams = TeamModel.objects.select_related('manager', 'coach')
         team_list = []
         for team in teams:
             team_list.append({
@@ -241,7 +244,7 @@ class Team:
             return json_failed(1, '用户或战队不存在')
         if user.person.team is not None:
             return json_failed(2, '已经加入了战队')
-        if user.person.type != Person.PERSON_TYPE_PLAYER:
+        if user.person.type != PersonModel.PERSON_TYPE_PLAYER:
             return json_failed(3, '只有选手可以加入战队')
         if TeamApplication.objects.filter(
                 user=user, team=team, status=TeamApplication.STATUS_PENDING).exists():
@@ -267,7 +270,7 @@ class Team:
     def remove_member(request):
         member_id: str = request.POST.get('memberId')
 
-        member: Person = Person.objects.filter(id=member_id).first()
+        member: PersonModel = PersonModel.objects.filter(id=member_id).first()
         team: TeamModel = member.team
 
         member.team = None
@@ -322,7 +325,7 @@ class Team:
 
 def coach_chose(request):
     coach_id: str = request.POST.get('id').strip()
-    coach: Person = Person.objects.filter(id=coach_id, type=Person.PERSON_TYPE_COACH).first()
+    coach: PersonModel = PersonModel.objects.filter(id=coach_id, type=PersonModel.PERSON_TYPE_COACH).first()
     if coach is None:
         return json_failed(1, '教练不存在')
 
@@ -330,6 +333,125 @@ def coach_chose(request):
         'coachId': coach.id,
         'coachName': coach.name,
     })
+
+
+class Player:
+    @staticmethod
+    def list(request):
+        persons = PersonModel.objects.filter(type=PersonModel.PERSON_TYPE_PLAYER).select_related('persondata')
+        person_list = []
+        for person in persons:
+            person_list.append({
+                'id': person.id,
+                'name': person.name,
+                'gender': '男' if person.gender else '女',
+                'team': person.team.name if person.team is not None else '暂无',
+                'win_rate': str(person.persondata.win_rate) + '%',
+            })
+
+        return json_list(person_list)
+
+    @staticmethod
+    def record_list(request, player_id: int):
+        player: PersonModel = PersonModel.objects.filter(id=player_id).first()
+        records = player.persondata.persondatarecord_set.all()
+        record_list = []
+
+        for record in records:
+            record_list.append({
+                'id': record.id,
+                'win': '胜利' if record.win else '失败',
+                'kill': record.kill,
+                'assist': record.assist,
+                'death': record.death,
+                'reinforce': record.reinforce,
+                'money': record.money,
+                'tower': record.tower,
+                'type': record.get_type_display(),
+                'date': date.strftime(record.date, '%Y年%m月%d日'),
+            })
+
+        return json_list(record_list)
+
+    @staticmethod
+    def add_record(request, player_id: int):
+        win: bool = request.POST.get('win', '').strip() == 'on'
+        kill: str = request.POST.get('kill').strip()
+        assist: str = request.POST.get('assist').strip()
+        death: str = request.POST.get('death').strip()
+        reinforce: str = request.POST.get('reinforce').strip()
+        money: str = request.POST.get('money').strip()
+        tower: str = request.POST.get('tower').strip()
+        type: str = request.POST.get('type')
+        date: str = request.POST.get('date')
+
+        player: PersonModel = PersonModel.objects.filter(id=player_id).first()
+
+        PersonDataRecord.objects.create(
+            data=player.persondata,
+            win=win,
+            kill=kill,
+            assist=assist,
+            death=death,
+            reinforce=reinforce,
+            money=money,
+            tower=tower,
+            type=type,
+            date=date,
+        )
+
+        Player.update_record(player.persondata)
+
+        return json_success({})
+
+    @staticmethod
+    def change_record(request, record_id: int):
+        win: bool = request.POST.get('win').strip() == 'on'
+        kill: str = request.POST.get('kill').strip()
+        assist: str = request.POST.get('assist').strip()
+        death: str = request.POST.get('death').strip()
+        reinforce: str = request.POST.get('reinforce').strip()
+        money: str = request.POST.get('money').strip()
+        tower: str = request.POST.get('tower').strip()
+        type: str = request.POST.get('type')
+        date: str = request.POST.get('date')
+
+        record: PersonDataRecord = PersonDataRecord.objects.filter(id=record_id).first()
+
+        record.win = win
+        record.kill = kill
+        record.assist = assist
+        record.death = death
+        record.reinforce = reinforce
+        record.money = money
+        record.tower = tower
+        record.type = type
+        record.date = date
+        record.save()
+
+        Player.update_record(record.data)
+
+    @staticmethod
+    def update_record(data: PersonData):
+        data.win = 0
+        data.kill = 0
+        data.assist = 0
+        data.death = 0
+        data.reinforce = 0
+        data.money = 0
+        data.tower = 0
+        for record in data.persondatarecord_set.all():
+            data.win += record.win
+            data.kill += record.kill
+            data.assist += record.assist
+            data.death += record.death
+            data.reinforce += record.reinforce
+            data.money += record.money
+            data.tower += record.tower
+
+        data.win_rate = int(float(data.win) / len(data.persondatarecord_set.all()) * 100)
+        print(data.win_rate)
+        data.save()
 
 
 class Message:
