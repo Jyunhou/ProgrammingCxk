@@ -1,3 +1,4 @@
+import re
 from datetime import date
 
 from django.contrib import auth
@@ -105,6 +106,10 @@ class Auth:
         pwd_valid: (bool, int, str) = password_validate(password, repass)
         if not pwd_valid[0]:
             return json_failed(pwd_valid[1], pwd_valid[2])
+        
+        email_pattern: str = r'^[a-zA-Z0-9_-]+(\.[a-zA-Z0-9_-]+){0,4}@[a-zA-Z0-9_-]+(\.[a-zA-Z0-9_-]+){0,4}$'
+        if not re.match(email_pattern, email):
+            return json_failed(2, '邮箱格式错误')
 
         if DjangoUser.objects.filter(username=username).exists():
             return json_failed(1, '用户名已存在')
