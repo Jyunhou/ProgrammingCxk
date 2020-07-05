@@ -108,7 +108,9 @@ class Player:
             raise Http404()
 
         can_manage_info = False
-        if request.user.person.type == Person.PERSON_TYPE_PLAYER:
+        if not request.user.is_authenticated:
+            can_manage_info = False
+        elif request.user.person.type == Person.PERSON_TYPE_PLAYER:
             if request.user.person == person:
                 can_manage_info = True
         elif request.user.person.type == Person.PERSON_TYPE_COACH:
